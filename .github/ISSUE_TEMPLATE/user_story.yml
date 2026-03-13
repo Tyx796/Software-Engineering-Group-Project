@@ -1,0 +1,92 @@
+name: User Story
+description: Create a new user story for the project
+title: "US[X]: "
+labels: ["user-story", "enhancement"]
+body:
+  - type: input
+    id: story_id
+    attributes:
+      label: Story ID
+      description: "Leave as US[X] - will be auto-assigned (e.g., US1, US2)"
+      placeholder: "US[X]"
+      value: "US[X]"
+    validations:
+      required: true
+
+  - type: input
+    id: story_name
+    attributes:
+      label: Story Name
+      description: Short descriptive name for this story
+      placeholder: "User Registration"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "Use the standard format: As a [role], I want to [feature], so that [benefit]"
+      placeholder: "As a system user, I want to register an account, so that I can use the system functions."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Importance of this user story (MoSCoW method)
+      options:
+        - Must
+        - Should
+        - Could
+        - Want
+    validations:
+      required: true
+
+  - type: input
+    id: iteration
+    attributes:
+      label: Iteration
+      description: Which iteration/sprint this story belongs to
+      placeholder: "1"
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: List the conditions that must be met for this story to be considered complete (one per line)
+      placeholder: |
+        1. The user can enter registration information
+        2. The system creates a new account successfully
+        3. Duplicate accounts cannot be registered
+    validations:
+      required: true
+
+  - type: input
+    id: estimation
+    attributes:
+      label: Estimation
+      description: Estimated effort in story points or days
+      placeholder: "3"
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Additional information or context
+      placeholder: "Any additional notes or considerations..."
+
+  - type: input
+    id: date_started
+    attributes:
+      label: Date Started
+      description: Planned start date
+      placeholder: "2026-03-22"
+
+  - type: input
+    id: date_finished
+    attributes:
+      label: Date Finished
+      description: Planned completion date
+      placeholder: "2026-04-05"
