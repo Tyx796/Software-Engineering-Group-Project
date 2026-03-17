@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicant List - BUPT TA System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="system-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="system-logo">BUPT TA System</div>
+                <nav>
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="organiser_home.html">My Positions</a></li>
+                    </ul>
+                </nav>
+                <div class="d-flex align-items-center">
+                    <span class="me-3"><strong>Dr. Sarah Johnson</strong> <span class="badge bg-success">Organiser</span></span>
+                    <a href="login.html" class="btn btn-outline-danger btn-sm">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="organiser_home.html">My Positions</a></li>
+                <li class="breadcrumb-item active">Applicants</li>
+            </ol>
+        </nav>
+
+        <!-- Position Info Header -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="mb-2">Database Systems TA</h3>
+                        <p class="text-muted mb-0">
+                            <strong>Course:</strong> CS301 |
+                            <strong>Hours/Week:</strong> 20 |
+                            <strong>Deadline:</strong> April 15, 2026
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="mb-2">
+                            <span class="badge bg-primary fs-6">8 Total Applications</span>
+                        </div>
+                        <div>
+                            <span class="badge bg-warning">5 Pending</span>
+                            <span class="badge bg-success">2 Accepted</span>
+                            <span class="badge bg-danger">1 Rejected</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter and Sort Options -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Filter by Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all" selected>All Applications</option>
+                            <option value="pending">Pending Only</option>
+                            <option value="accepted">Accepted Only</option>
+                            <option value="rejected">Rejected Only</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Sort by</label>
+                        <select class="form-select" id="sortBy">
+                            <option value="match" selected>Match Score (High to Low)</option>
+                            <option value="date">Application Date (Recent First)</option>
+                            <option value="name">Name (A-Z)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Search</label>
+                        <input type="text" class="form-control" placeholder="Search by name or email...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applicants Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Applicants</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Applicant Name</th>
+                                <th>Email</th>
+                                <th>Applied Date</th>
+                                <th>AI Match Score</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background-color: #d4edda;">
+                                <td><strong>John Doe</strong></td>
+                                <td>john.doe@university.edu</td>
+                                <td>March 5, 2026</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="match-score-bar me-2" style="width: 100px;">
+                                            <div class="match-score-fill" style="width: 95%; background-color: #28a745;"></div>
+                                        </div>
+                                        <strong style="color: #155724;">95%</strong>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-accepted">Accepted</span></td>
+                                <td>
+                                    <a href="applicant_review.html" class="btn btn-sm btn-primary">Review</a>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #d4edda;">
+                                <td><strong>Emily Chen</strong></td>
+                                <td>emily.chen@university.edu</td>
+                                <td>March 6, 2026</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="match-score-bar me-2" style="width: 100px;">
+                                            <div class="match-score-fill" style="width: 92%; background-color: #28a745;"></div>
+                                        </div>
+                                        <strong style="color: #155724;">92%</strong>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>
+                                    <a href="applicant_review.html" class="btn btn-sm btn-primary">Review</a>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #d4edda;">
+                                <td><strong>Michael Brown</strong></td>
+                                <td>m.brown@university.edu</td>
+                                <td>March 7, 2026</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="match-score-bar me-2" style="width: 100px;">
+                                            <div class="match-score-fill" style="width: 88%; background-color: #28a745;"></div>
+                                        </div>
+                                        <strong style="color: #155724;">88%</strong>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-accepted">Accepted</span></td>
+                                <td>
+                                    <a href="applicant_review.html" class="btn btn-sm btn-primary">Review</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sarah Williams</strong></td>
+                                <td>s.williams@university.edu</td>
+                                <td>March 8, 2026</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="match-score-bar me-2" style="width: 100px;">
+                                            <div class="match-score-fill" style="width: 85%"></div>
+                                        </div>
+                                        <strong>85%</strong>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>
+                                    <a href="applicant_review.html" class="btn btn-sm btn-primary">Review</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>David Lee</strong></td>
+                                <td>david.lee@university.edu</td>
+                                <td>March 9, 2026</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="match-score-bar me-2" style="width: 100px;">
+                                            <div class="match-score-fill" style="width: 78%"></div>
+                                        </div>
+                                        <strong>78%</strong>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>
+                                    <a href="applicant_review.html" class="btn btn-sm btn-primary">Review</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Jessica Martinez</strong></td>
+                                <td>j.martinez@university.edu</td>
+                                <td>March 10, 2026</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="match-score-bar me-2" style="width: 100px;">
+                                            <div class="match-score-fill" style="width: 72%"></div>
+                                        </div>
+                                        <strong>72%</strong>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>
+                                    <a href="applicant_review.html" class="btn btn-sm btn-primary">Review</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Robert Taylor</strong></td>
+                                <td>r.taylor@university.edu</td>
+                                <td>March 11, 2026</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="match-score-bar me-2" style="width: 100px;">
+                                            <div class="match-score-fill" style="width: 68%"></div>
+                                        </div>
+                                        <strong>68%</strong>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>
+                                    <a href="applicant_review.html" class="btn btn-sm btn-primary">Review</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Amanda Wilson</strong></td>
+                                <td>a.wilson@university.edu</td>
+                                <td>March 4, 2026</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="match-score-bar me-2" style="width: 100px;">
+                                            <div class="match-score-fill" style="width: 55%"></div>
+                                        </div>
+                                        <strong>55%</strong>
+                                    </div>
+                                </td>
+                                <td><span class="status-badge status-rejected">Rejected</span></td>
+                                <td>
+                                    <a href="applicant_review.html" class="btn btn-sm btn-outline-secondary">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <p class="text-muted small mb-0">
+                    <strong>Tip:</strong> Click "Review" to view detailed applicant information, CV, and make acceptance decisions.
+                    Applications are sorted by AI match score by default to help you identify the best candidates.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="system-footer">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 BUPT TA System. All rights reserved.</p>
+            <p class="small">Need help? Contact <a href="mailto:support@tams.edu">support@tams.edu</a></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
