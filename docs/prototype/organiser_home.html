@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organiser Dashboard - BUPT TA System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="system-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="system-logo">BUPT TA System</div>
+                <nav>
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link active" href="organiser_home.html">My Positions</a></li>
+                    </ul>
+                </nav>
+                <div class="d-flex align-items-center">
+                    <span class="me-3"><strong>Dr. Sarah Johnson</strong> <span class="badge bg-success">Organiser</span></span>
+                    <a href="login.html" class="btn btn-outline-danger btn-sm">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>My TA Positions</h2>
+            <a href="edit_job.html" class="btn btn-primary btn-lg">
+                <span class="me-2">+</span> Create New Position
+            </a>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">4</h3>
+                        <p class="text-muted mb-0">Active Positions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">23</h3>
+                        <p class="text-muted mb-0">Total Applications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0 text-warning">12</h3>
+                        <p class="text-muted mb-0">Pending Review</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0 text-success">5</h3>
+                        <p class="text-muted mb-0">Positions Filled</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Positions Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Published Positions</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Position Title</th>
+                                <th>Hours/Week</th>
+                                <th>Application Deadline</th>
+                                <th>Applications</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Database Systems TA</strong></td>
+                                <td>20</td>
+                                <td>April 15, 2026</td>
+                                <td>
+                                    <span class="badge bg-primary">8 applicants</span>
+                                </td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>
+                                    <a href="edit_job.html" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="applicant_list.html" class="btn btn-sm btn-primary">View Applicants</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Web Development TA</strong></td>
+                                <td>15</td>
+                                <td>April 20, 2026</td>
+                                <td>
+                                    <span class="badge bg-primary">6 applicants</span>
+                                </td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>
+                                    <a href="edit_job.html" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="applicant_list.html" class="btn btn-sm btn-primary">View Applicants</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Software Engineering TA</strong></td>
+                                <td>18</td>
+                                <td>April 18, 2026</td>
+                                <td>
+                                    <span class="badge bg-primary">5 applicants</span>
+                                </td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>
+                                    <a href="edit_job.html" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="applicant_list.html" class="btn btn-sm btn-primary">View Applicants</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Computer Networks TA</strong></td>
+                                <td>16</td>
+                                <td>April 22, 2026</td>
+                                <td>
+                                    <span class="badge bg-primary">4 applicants</span>
+                                </td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>
+                                    <a href="edit_job.html" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="applicant_list.html" class="btn btn-sm btn-primary">View Applicants</a>
+                                </td>
+                            </tr>
+                            <tr class="table-secondary">
+                                <td><strong>Algorithms TA (Spring 2025)</strong></td>
+                                <td>20</td>
+                                <td>January 15, 2025</td>
+                                <td>
+                                    <span class="badge bg-secondary">12 applicants</span>
+                                </td>
+                                <td><span class="badge bg-secondary">Closed</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>View Archive</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Activity</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <span class="text-muted small">2 hours ago</span><br>
+                                New application for <strong>Database Systems TA</strong>
+                            </li>
+                            <li class="mb-2">
+                                <span class="text-muted small">5 hours ago</span><br>
+                                New application for <strong>Web Development TA</strong>
+                            </li>
+                            <li class="mb-2">
+                                <span class="text-muted small">1 day ago</span><br>
+                                Position <strong>Software Engineering TA</strong> published
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Upcoming Deadlines</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <span class="badge bg-danger">3 days left</span><br>
+                                <strong>Database Systems TA</strong> - April 15, 2026
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-warning">6 days left</span><br>
+                                <strong>Software Engineering TA</strong> - April 18, 2026
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-info">8 days left</span><br>
+                                <strong>Web Development TA</strong> - April 20, 2026
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="system-footer">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 BUPT TA System. All rights reserved.</p>
+            <p class="small">Need help? Contact <a href="mailto:support@tams.edu">support@tams.edu</a></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
