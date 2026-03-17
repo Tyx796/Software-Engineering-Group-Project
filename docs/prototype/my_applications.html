@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - BUPT TA System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="system-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="system-logo">BUPT TA System</div>
+                <nav>
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link" href="applicant_home.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="profile.html">My Profile</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="my_applications.html">My Applications</a></li>
+                    </ul>
+                </nav>
+                <div class="d-flex align-items-center">
+                    <span class="me-3"><strong>John Doe</strong> <span class="badge bg-info">Applicant</span></span>
+                    <a href="login.html" class="btn btn-outline-danger btn-sm">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="mb-4">My Applications</h2>
+
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">5</h3>
+                        <p class="text-muted mb-0">Total Applications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0 text-warning">2</h3>
+                        <p class="text-muted mb-0">Pending</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0 text-success">2</h3>
+                        <p class="text-muted mb-0">Accepted</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0 text-danger">1</h3>
+                        <p class="text-muted mb-0">Rejected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Position</th>
+                                <th>Department</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Database Systems TA</strong></td>
+                                <td>Computer Science</td>
+                                <td>March 5, 2026</td>
+                                <td><span class="status-badge status-accepted">Accepted</span></td>
+                                <td>March 10, 2026</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailModal1">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Web Development TA</strong></td>
+                                <td>Computer Science</td>
+                                <td>March 8, 2026</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>March 8, 2026</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailModal2">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Machine Learning TA</strong></td>
+                                <td>Computer Science</td>
+                                <td>March 3, 2026</td>
+                                <td><span class="status-badge status-rejected">Rejected</span></td>
+                                <td>March 9, 2026</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailModal3">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Structures TA</strong></td>
+                                <td>Computer Science</td>
+                                <td>March 10, 2026</td>
+                                <td><span class="status-badge status-accepted">Accepted</span></td>
+                                <td>March 11, 2026</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailModal4">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Operating Systems TA</strong></td>
+                                <td>Computer Science</td>
+                                <td>March 11, 2026</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>March 11, 2026</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailModal5">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal 1 - Accepted -->
+    <div class="modal fade" id="detailModal1" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Application Details - Database Systems TA</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Position:</strong>
+                            <p>Database Systems TA</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Status:</strong>
+                            <p><span class="status-badge status-accepted">Accepted</span></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Applied Date:</strong>
+                            <p>March 5, 2026 at 10:30 AM</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Last Updated:</strong>
+                            <p>March 10, 2026 at 2:15 PM</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Module Organiser:</strong>
+                        <p>Dr. Sarah Johnson (s.johnson@university.edu)</p>
+                    </div>
+                    <div class="alert alert-success">
+                        <strong>Organiser's Note:</strong>
+                        <p class="mb-0">Congratulations! Your application has been accepted. Your strong background in database systems and excellent communication skills make you an ideal candidate. Please check your email for further instructions regarding the onboarding process.</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Timeline:</strong>
+                        <ul>
+                            <li>March 5, 2026 10:30 AM - Application submitted</li>
+                            <li>March 7, 2026 3:45 PM - Application under review</li>
+                            <li>March 10, 2026 2:15 PM - Application accepted</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal 2 - Pending -->
+    <div class="modal fade" id="detailModal2" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Application Details - Web Development TA</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Position:</strong>
+                            <p>Web Development TA</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Status:</strong>
+                            <p><span class="status-badge status-pending">Pending</span></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Applied Date:</strong>
+                            <p>March 8, 2026 at 9:20 AM</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Last Updated:</strong>
+                            <p>March 8, 2026 at 9:20 AM</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Module Organiser:</strong>
+                        <p>Prof. Michael Chen (m.chen@university.edu)</p>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Status:</strong>
+                        <p class="mb-0">Your application is currently under review. The module organiser will contact you soon.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal 3 - Rejected -->
+    <div class="modal fade" id="detailModal3" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Application Details - Machine Learning TA</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Position:</strong>
+                            <p>Machine Learning TA</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Status:</strong>
+                            <p><span class="status-badge status-rejected">Rejected</span></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Applied Date:</strong>
+                            <p>March 3, 2026 at 11:00 AM</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Last Updated:</strong>
+                            <p>March 9, 2026 at 4:30 PM</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Module Organiser:</strong>
+                        <p>Dr. Emily Watson (e.watson@university.edu)</p>
+                    </div>
+                    <div class="alert alert-danger">
+                        <strong>Organiser's Note:</strong>
+                        <p class="mb-0">Thank you for your interest in the Machine Learning TA position. Unfortunately, we have decided to move forward with other candidates who have more extensive experience with deep learning frameworks. We encourage you to apply for future positions and continue developing your skills in this area.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional modals for other applications would follow the same pattern -->
+    <div class="modal fade" id="detailModal4" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Application Details - Data Structures TA</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Application accepted with positive feedback from the organiser.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailModal5" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Application Details - Operating Systems TA</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Application is pending review.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="system-footer">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 BUPT TA System. All rights reserved.</p>
+            <p class="small">Need help? Contact <a href="mailto:support@tams.edu">support@tams.edu</a></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

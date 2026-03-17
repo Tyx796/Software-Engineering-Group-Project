@@ -1,0 +1,107 @@
+name: Auto-assign User Story ID
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  assign-story-id:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'user-story')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Find next US ID and update issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const issueBody = issue.body;
+            
+            // Check if Story ID is already assigned
+            // Match format: ### Story ID\n\nUS[X]\n
+            const storyIdMatch = issueBody.match(/### Story ID\s*\n+(US\d+)/i);
+            if (storyIdMatch && storyIdMatch[1] !== 'US[X]') {
+              console.log('Story ID already assigned:', storyIdMatch[1]);
+              return;
+            }
+            
+            // Get all issues to find the highest US number
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              labels: 'user-story',
+              per_page: 100
+            });
+            
+            let maxNum = 0;
+            for (const iss of issues) {
+              const match = iss.title.match(/US(\d+)/i);
+              if (match) {
+                maxNum = Math.max(maxNum, parseInt(match[1]));
+              }
+            }
+            
+            const nextId = `US${maxNum + 1}`;
+            
+            // Extract Story Name from body
+            let storyName = '';
+            // Match format: ### Story Name\n\nValue\n (handles empty lines)
+            const storyNameMatch = issueBody.match(/### Story Name\s*\n+([^\n#]+)(?:\n|$)/i);
+            if (storyNameMatch) {
+              storyName = storyNameMatch[1].trim();
+              console.log('Found Story Name:', storyName);
+            } else {
+              console.log('Story Name not found in body');
+            }
+            
+            // Update issue title with Story ID and Story Name
+            let newTitle = issue.title.replace(/US\[X\]/i, nextId);
+            if (storyName && !newTitle.includes(':')) {
+              newTitle = `${newTitle.trim()}: ${storyName}`;
+            }
+            
+            if (newTitle !== issue.title) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                title: newTitle
+              });
+            }
+            
+            // Update issue body
+            let newBody = issueBody;
+            
+            // Replace Story ID in body
+            // Match format: ### Story ID\n\nUS[X]\n
+            newBody = newBody.replace(
+              /(### Story ID\s*\n+)US\[X\]/i,
+              `$1${nextId}`
+            );
+            
+            if (newBody !== issueBody) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: newBody
+              });
+            }
+            
+            console.log(`Assigned ${nextId} to issue #${issue.number}`);
+            console.log(`Updated title: ${newTitle}`);
+            
+            // Add a comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `Auto-assigned Story ID: **${nextId}**`
+            });
