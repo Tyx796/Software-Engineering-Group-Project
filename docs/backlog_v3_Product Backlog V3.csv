@@ -1,0 +1,176 @@
+Story ID,Story Name,Description,Priority,Iteration number,Acceptance Criteria,Estimation,Notes,Date started,Date finished
+US1,User Registration,"As a system user, I want to register an account, so that I can use the system functions.",Must,1,"1. The user can enter registration information.
+2. The system can create a new account successfully.
+3. Duplicate accounts cannot be registered.
+4. The system shows a success message after registration.",3,Supports account creation for system access.,2026-03-22,2026-04-05
+US2,User Login,"As a system user, I want to log in to the system, so that I can access functions related to my role.",Must,1,"1. The user can enter account and password to log in.
+2. The system validates the login information.
+3. The user enters the system homepage after successful login.
+4. The system shows an error message when login fails.",2,Supports authenticated system access.,2026-03-22,2026-04-05
+US3,Role-based Access,"As a system user, I want the system to show pages according to my role, so that I can use the functions suitable for me.",Must,1,"1. The system recognises Applicant, Module Organiser, and Admin roles.
+2. Different roles enter different pages after login.
+3. Users can only see functions related to their roles.
+4. Unauthorised functions cannot be accessed.",1,Controls access based on user role.,2026-03-22,2026-04-05
+US4,Create Applicant Profile,"As a TA applicant, I want to create my applicant profile, so that I can provide personal information for job applications.",Must,1,"1. The applicant can enter basic personal information.
+2. The applicant can save the profile successfully.
+3. Required fields must not be empty.
+4. The system shows a confirmation message after saving.",3,Creates the core applicant profile record.,2026-03-22,2026-04-05
+US5,Edit Basic Applicant Information,"As a TA applicant, I want to edit my basic information, so that my personal information remains accurate.",Must,3,"1. The applicant can edit name, contact details, and other basic information.
+2. Updated information is saved successfully.
+3. The system shows an update success message.
+4. The page displays the latest information.",2,Maintains applicant basic information.,2026-04-19,2026-05-03
+US6,Edit Skills Information,"As a TA applicant, I want to edit my skills information, so that I can show how my abilities match the job.",Should,4,"1. The applicant can add skills information.
+2. The applicant can modify existing skills information.
+3. Skills information is saved successfully.
+4. The system shows an update success message.",2,Maintains applicant skills information.,2026-05-03,2026-05-17
+US7,Edit Availability,"As a TA applicant, I want to edit my availability, so that module organisers can understand my schedule.",Should,4,"1. The applicant can enter available working time.
+2. The applicant can update existing availability.
+3. Availability information is saved successfully.
+4. The system shows an update success message.",2,Maintains applicant availability information.,2026-05-03,2026-05-17
+US8,Upload CV,"As a TA applicant, I want to upload my CV, so that the module organiser can review my qualifications.",Must,1,"1. The applicant can upload a CV.
+2. The uploaded CV is linked to the profile.
+3. The system stores the CV successfully.
+4. The system shows a success message after upload.",3,Stores applicant CV information.,2026-03-22,2026-04-05
+US9,View Uploaded CV,"As a TA applicant, I want to view my uploaded CV information, so that I can confirm whether my CV has been submitted.",Should,4,"1. The applicant can view the current uploaded CV.
+2. The displayed information matches the current user.
+3. The CV information can be loaded correctly.
+4. The page displays the information clearly.",1,Allows applicants to review submitted CV information.,2026-05-03,2026-05-17
+US10,Replace CV,"As a TA applicant, I want to replace my uploaded CV, so that I can submit the latest version.",Should,4,"1. The applicant can upload a new CV again.
+2. The system keeps the latest version as the current CV.
+3. The updated CV remains linked to the profile.
+4. The system shows a replacement success message.",1,Keeps applicant CV current.,2026-05-03,2026-05-17
+US11,View Available Job List,"As a TA applicant, I want to view a list of available jobs, so that I can find positions I can apply for.",Must,1,"1. The applicant can see a list of open jobs.
+2. Each job shows title, requirements, workload, and deadline.
+3. Closed or expired jobs are not shown as open jobs.
+4. The job list loads successfully.",5,Displays open jobs to applicants.,2026-03-22,2026-04-05
+US12,View Job Details,"As a TA applicant, I want to view job details, so that I can understand the requirements before applying.",Must,1,"1. The applicant can open a job details page.
+2. The page shows description, skill requirements, workload, and deadline.
+3. The displayed content matches the selected job.
+4. The details page can be opened from the job list.",2,Shows detailed information for a selected job.,2026-03-22,2026-04-05
+US13,Search Jobs by Keyword,"As a TA applicant, I want to search jobs by keyword, so that I can quickly find relevant positions.",Should,4,"1. The applicant can enter keywords to search jobs.
+2. The system shows matching jobs.
+3. The system shows a message when no matching result is found.
+4. Search results only include available jobs.",5,Improves efficiency of job search.,2026-05-03,2026-05-17
+US14,Submit Job Application,"As a TA applicant, I want to submit a job application, so that I can be considered for the position.",Must,2,"1. The applicant can submit an application for a selected job.
+2. The system creates an application record successfully.
+3. The application is linked to the correct job.
+4. The system shows a success message after submission.",5,Creates application records for jobs.,2026-04-05,2026-04-19
+US15,Record Application Submission Time,"As a system user, I want the system to record the application submission time, so that the application process information is preserved.",Must,2,"1. The system records the time when an application is submitted.
+2. The submission time is linked to the correct application.
+3. The submission time can be read correctly.
+4. The saved submission time is not lost.",1,Stores timestamp for application records.,2026-04-05,2026-04-19
+US16,Prevent Duplicate Application,"As a system user, I want the system to prevent the same applicant from applying for the same job more than once, so that application records remain valid.",Must,2,"1. The system checks whether the applicant has already applied for the job.
+2. Duplicate applications are blocked.
+3. The system shows an error message.
+4. The existing application record is not modified.",2,Prevents duplicate job applications.,2026-04-05,2026-04-19
+US17,Check Applicant Profile Before Application,"As a system user, I want the system to check whether the applicant has created a profile before applying, so that application information is complete.",Must,2,"1. The system checks whether a profile exists before submission.
+2. The user cannot submit an application without a profile.
+3. The system prompts the applicant to complete the profile first.
+4. Users with profiles can continue the application.",1,Validates applicant profile before submission.,2026-04-05,2026-04-19
+US18,Check CV Before Application,"As a system user, I want the system to check whether the applicant has uploaded a CV before applying, so that application materials are complete.",Must,2,"1. The system checks whether a CV exists before submission.
+2. The user cannot submit an application without a CV.
+3. The system prompts the applicant to upload a CV first.
+4. Users with a CV can continue the application.",2,Validates CV before submission.,2026-04-05,2026-04-19
+US19,View Application List,"As a TA applicant, I want to view my application list, so that I can track all job applications in one place.",Must,2,"1. The applicant can view their own application list.
+2. Each record shows the job title.
+3. Each record shows the current status.
+4. Only the current applicant's records are shown.",3,Shows all applications for the current applicant.,2026-04-05,2026-04-19
+US20,View Application Status Details,"As a TA applicant, I want to view the status details of each application, so that I can understand the result.",Must,2,"1. The applicant can view the status of a single application.
+2. Status information is displayed clearly.
+3. The status matches the correct application.
+4. The page loads successfully.",1,Shows detailed application status.,2026-04-05,2026-04-19
+US21,View Updated Application Result,"As a TA applicant, I want to see the updated application result from the module organiser, so that I know whether I have been accepted.",Must,3,"1. The applicant view shows the latest status after the module organiser updates it.
+2. Status values are displayed consistently.
+3. The applicant can see updates without resubmitting the application.
+4. The displayed information is accurate.",1,Reflects updated application results to applicants.,2026-04-19,2026-05-03
+US22,Create Job Posting,"As a Module Organiser, I want to create a job posting, so that TA applicants can apply for the job.",Must,1,"1. The module organiser can create a new job.
+2. The system allows entry of job title and description.
+3. The job is saved successfully.
+4. The created job appears in the list.",5,Creates job postings for recruitment.,2026-03-22,2026-04-05
+US23,Set Job Requirements,"As a Module Organiser, I want to set skill requirements for a job, so that more suitable applicants can be selected.",Must,1,"1. The module organiser can enter skill requirements for a job.
+2. The requirements are saved successfully.
+3. The job details page shows the requirements.
+4. Applicants can view the requirements.",2,Stores job skill requirements.,2026-03-22,2026-04-05
+US24,Set Workload and Deadline,"As a Module Organiser, I want to set the workload and deadline of a job, so that the job arrangement is clear.",Must,1,"1. The module organiser can enter workload information.
+2. The module organiser can set a deadline.
+3. The information is saved successfully.
+4. The applicant view shows the information correctly.",2,Stores job workload and deadline.,2026-03-22,2026-04-05
+US25,Edit Job Posting,"As a Module Organiser, I want to edit job posting information, so that I can update recruitment content.",Should,4,"1. The module organiser can edit an existing job.
+2. Updated content is saved successfully.
+3. Applicants can see the latest information.
+4. The system shows a success message after update.",5,Keeps job posting information current.,2026-05-03,2026-05-17
+US26,View Applicant List for a Job,"As a Module Organiser, I want to view the applicant list for a job, so that I can see who has applied.",Must,3,"1. The module organiser can view the applicant list for a selected job.
+2. The list shows applicant names and basic information.
+3. The list is linked to the correct job.
+4. The list loads successfully.",3,Shows applicants for a selected job.,2026-04-19,2026-05-03
+US27,View Applicant Basic Information,"As a Module Organiser, I want to view an applicant's basic information, so that I can make an initial evaluation.",Must,3,"1. The module organiser can view the applicant's basic profile.
+2. The displayed information belongs to the selected applicant.
+3. The information is clear and readable.
+4. The page displays successfully.",2,Shows applicant basic profile details.,2026-04-19,2026-05-03
+US28,View Applicant Skills and Availability,"As a Module Organiser, I want to view an applicant's skills and availability, so that I can judge whether the applicant matches the job requirements.",Must,3,"1. The module organiser can view the applicant's skills.
+2. The module organiser can view the applicant's availability.
+3. The displayed information matches the selected applicant.
+4. The information is complete.",2,Shows applicant skills and availability.,2026-04-19,2026-05-03
+US29,View Applicant CV,"As a Module Organiser, I want to view an applicant's CV, so that I can evaluate the candidate more completely.",Must,3,"1. The module organiser can view the applicant's CV.
+2. The CV is linked to the correct applicant.
+3. The CV content can be loaded correctly.
+4. The page displays clearly.",2,Allows review of applicant CV.,2026-04-19,2026-05-03
+US30,Accept Applicant,"As a Module Organiser, I want to accept an applicant, so that I can complete a hiring decision.",Must,3,"1. The module organiser can change the application status to Accepted.
+2. The updated status is saved successfully.
+3. The applicant view shows Accepted.
+4. The result matches the correct application.",4,Supports applicant acceptance decisions.,2026-04-19,2026-05-03
+US31,Reject Applicant,"As a Module Organiser, I want to reject an applicant, so that I can complete recruitment screening.",Must,3,"1. The module organiser can change the application status to Rejected.
+2. The updated status is saved successfully.
+3. The applicant view shows Rejected.
+4. The result matches the correct application.",2,Supports applicant rejection decisions.,2026-04-19,2026-05-03
+US32,Set Application Status to Pending,"As a Module Organiser, I want to set an application status to Pending, so that I can keep the candidate before making a final decision.",Should,4,"1. The module organiser can set the application status to Pending.
+2. The updated status is saved successfully.
+3. The applicant view shows Pending.
+4. The result matches the correct application.",2,Supports temporary pending decisions.,2026-05-03,2026-05-17
+US33,View Assigned Workload of Each TA,"As an administrator, I want to view the assigned workload of each TA, so that I can understand the current allocation.",Should,4,"1. The administrator can view the workload of each TA.
+2. The workload is linked to accepted jobs.
+3. The data is displayed clearly.
+4. The page loads successfully.",5,Shows workload allocation by TA.,2026-05-03,2026-05-17
+US34,View Overall TA Workload,"As an administrator, I want to view the overall workload of TAs, so that I can avoid overloading individual TAs.",Should,4,"1. The system can summarise the workload of each TA.
+2. The overall workload information is displayed clearly.
+3. The administrator can identify TAs with high workload.
+4. The data is accurate.",3,Supports overall workload monitoring.,2026-05-03,2026-05-17
+US35,Data Storage in Text Files,"As a system developer, I want all data to be stored in CSV/JSON files, so that the system remains compatible with existing school systems.",Must,1,"1. All user data stored in .json or .csv format
+2. No database (MySQL, etc.) is used
+3. Files can be backed up by simply copying
+4. File format is documented in README",3,,2026-03-22,2026-04-05
+US36,Password Security,"As a system user, I want my password to be stored securely, so that my personal information is protected.",Must,2,"1. Passwords are not stored in plain text
+2. Use hashing before saving to file
+3. Login validates against hashed password
+4. Error messages don't reveal whether username or password was wrong",2,,2026-04-05,2026-04-19
+US37,Responsive Application Forms,"As a TA applicant, I want form validation to show errors immediately, so that I can correct mistakes before submitting.",Should,3,"1. Required fields show warning if left empty
+2. Email format is validated
+3. Error messages are clear and specific
+4. Form data is preserved when errors occur",2,,2026-04-19,2026-05-03
+US38,System Performance,"As a Module Organiser, I want the applicant list to load quickly even with many applicants, so that I can efficiently review candidates.",Could,4,"1. List of 50+ applicants loads in <3 seconds
+2. Sorting and filtering respond in <1 second
+3. System remains responsive during data loading",3,,2026-05-03,2026-05-17
+US39,Error Handling,"As a system user, I want clear error messages when something goes wrong, so that I understand what happened and what to do next.",Should,3,"1. File read/write errors show user-friendly message
+2. Network/timeout errors are caught
+3. Errors are logged for debugging
+4. System doesn't crash on unexpected errors",2,,2026-04-19,2026-05-03
+US-C1,Skill Match Score,"As a Module Organiser, I want to see a skill match score for each applicant, so that I can quickly identify the most suitable candidates for a job.",Could,4,"1. The system compares job skill requirements with the applicant's skills
+2. A match score (e.g., 0-100%) is displayed next to each applicant
+3. The score updates automatically when skills or requirements change
+4. Higher scores are visually highlighted",5,AI-assisted feature; requires skill comparison logic.,2026-05-03,2026-05-17
+US-C2,Skill Gap Alert for Applicants,"As a TA applicant, I want to see which skills I am missing for a job before I apply, so that I can decide whether to apply or improve my profile first.",Could,4,"1. When viewing a job, the system highlights missing skills from the applicant's profile
+2. Missing skills are listed clearly
+3. The applicant is not blocked from applying
+4. The feature is available for all open jobs",5,AI-assisted feature; helps applicants improve self-awareness.,2026-05-03,2026-05-17
+US-C3,Workload Balance Warning for Admin,"As an administrator, I want to receive a warning if a TA's total assigned workload exceeds a threshold, so that I can avoid overloading individuals.",Could,4,"1. The system calculates total workload from all accepted jobs per TA
+2. A configurable threshold (e.g., 20 hours/week) is used
+3. A warning icon or message appears in the admin view
+4. The warning does not block assignment but provides visibility",5,Supports workload balancing; configurable threshold is a plus.,2026-05-03,2026-05-17
+US-W1,Auto-Suggest Jobs for TA,"As a TA applicant, I want the system to suggest jobs that match my skills, so that I don't have to search manually for suitable positions.",Want,4,"1. On the TA homepage, a list of recommended jobs is shown
+2. Recommendations are based on skill match with job requirements
+3. Recommended jobs are open and not yet applied to
+4. The list updates when skills or jobs change",5,AI-assisted feature; enhances user experience.,2026-05-03,2026-05-17
+US-W2,Export Workload Report,"As an administrator, I want to export the TA workload summary to a CSV file, so that I can share it with academic coordinators.",Want,4,"1. A button ""Export to CSV"" is available on the admin workload page
+2. The exported file contains TA name, total hours, and assigned jobs
+3. The file format is CSV and can be opened in Excel
+4. The export includes all TAs with accepted jobs",3,Enhances administrative usability; no AI needed.,2026-05-03,2026-05-17
