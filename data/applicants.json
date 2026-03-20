@@ -1,0 +1,12 @@
+[
+  {
+    "userId": "U-demo-applicant",
+    "fullName": "Demo Applicant",
+    "phone": "1234567890",
+    "studentId": "20260001",
+    "programme": "Software Engineering",
+    "bio": "Interested in TA work for Java and software engineering modules.",
+    "cvFileName": null,
+    "updatedAt": "2026-03-20T00:00:00Z"
+  }
+]

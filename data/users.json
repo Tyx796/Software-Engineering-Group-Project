@@ -1,0 +1,18 @@
+[
+  {
+    "id": "U-demo-applicant",
+    "username": "applicant_demo",
+    "email": "applicant@example.com",
+    "passwordHash": "fcf730b6d95236ecd3c9fc2d92d7b6b2bb061514961347f4a4c1314066baabdb",
+    "role": "APPLICANT",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "U-demo-organiser",
+    "username": "organiser_demo",
+    "email": "organiser@example.com",
+    "passwordHash": "fcf730b6d95236ecd3c9fc2d92d7b6b2bb061514961347f4a4c1314066baabdb",
+    "role": "ORGANISER",
+    "createdAt": "2026-03-20T00:00:00Z"
+  }
+]
