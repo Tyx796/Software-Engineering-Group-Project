@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BUPT TA System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="system-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="system-logo">BUPT TA System</div>
+                <nav>
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link active" href="admin_dashboard.html">Workload Monitor</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="d-flex align-items-center">
+                    <span class="me-3"><strong>Admin User</strong> <span class="badge bg-danger">Admin</span></span>
+                    <a href="login.html" class="btn btn-outline-danger btn-sm">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>TA Workload Monitoring Dashboard</h2>
+            <button class="btn btn-success" onclick="exportToCSV()">
+                <span class="me-2"></span> Export to CSV
+            </button>
+        </div>
+
+        <!-- Global Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">12</h3>
+                        <p class="text-muted mb-0">Active TAs</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">218</h3>
+                        <p class="text-muted mb-0">Total Hours/Week</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0 text-warning">3</h3>
+                        <p class="text-muted mb-0">Overloaded TAs</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="mb-0">18.2</h3>
+                        <p class="text-muted mb-0">Avg Hours/TA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Banner -->
+        <div class="alert alert-warning" role="alert">
+            <strong>Workload Alert:</strong> 3 TAs are currently working more than 20 hours per week. Please review
+            their assignments below.
+        </div>
+
+        <!-- Filter and Settings -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Workload Threshold (Hours/Week)</label>
+                        <input type="number" class="form-control" id="thresholdInput" value="20" min="1" max="40">
+                        <small class="text-muted">TAs exceeding this threshold will be highlighted</small>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Filter by Status</label>
+                        <select class="form-select">
+                            <option value="all" selected>All TAs</option>
+                            <option value="overloaded">Overloaded Only</option>
+                            <option value="normal">Normal Load</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Search</label>
+                        <input type="text" class="form-control" placeholder="Search by TA name...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workload Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">TA Workload Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>TA Name</th>
+                                <th>Email</th>
+                                <th>Assigned Positions</th>
+                                <th>Total Hours/Week</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Overloaded TAs -->
+                            <tr class="overload-warning">
+                                <td>
+                                    <span class="overload-icon"></span>
+                                    <strong>John Doe</strong>
+                                </td>
+                                <td>john.doe@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Database Systems TA (20h)</div>
+                                        <div>• Data Structures TA (8h)</div>
+                                    </div>
+                                </td>
+                                <td><strong class="text-danger">28 hours</strong></td>
+                                <td><span class="badge bg-danger">Overloaded</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="overload-warning">
+                                <td>
+                                    <span class="overload-icon"></span>
+                                    <strong>Emily Chen</strong>
+                                </td>
+                                <td>emily.chen@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Web Development TA (15h)</div>
+                                        <div>• Software Engineering TA (10h)</div>
+                                    </div>
+                                </td>
+                                <td><strong class="text-danger">25 hours</strong></td>
+                                <td><span class="badge bg-danger">Overloaded</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="overload-warning">
+                                <td>
+                                    <span class="overload-icon"></span>
+                                    <strong>Michael Brown</strong>
+                                </td>
+                                <td>m.brown@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Machine Learning TA (18h)</div>
+                                        <div>• Algorithms TA (6h)</div>
+                                    </div>
+                                </td>
+                                <td><strong class="text-danger">24 hours</strong></td>
+                                <td><span class="badge bg-danger">Overloaded</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Normal Load TAs -->
+                            <tr>
+                                <td><strong>Sarah Williams</strong></td>
+                                <td>s.williams@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Operating Systems TA (16h)</div>
+                                    </div>
+                                </td>
+                                <td>16 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>David Lee</strong></td>
+                                <td>david.lee@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Computer Networks TA (18h)</div>
+                                    </div>
+                                </td>
+                                <td>18 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Jessica Martinez</strong></td>
+                                <td>j.martinez@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Cybersecurity TA (15h)</div>
+                                    </div>
+                                </td>
+                                <td>15 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Robert Taylor</strong></td>
+                                <td>r.taylor@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Artificial Intelligence TA (20h)</div>
+                                    </div>
+                                </td>
+                                <td>20 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Amanda Wilson</strong></td>
+                                <td>a.wilson@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Mobile App Development TA (12h)</div>
+                                    </div>
+                                </td>
+                                <td>12 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Christopher Davis</strong></td>
+                                <td>c.davis@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Cloud Computing TA (14h)</div>
+                                    </div>
+                                </td>
+                                <td>14 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lisa Anderson</strong></td>
+                                <td>l.anderson@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Human-Computer Interaction TA (10h)</div>
+                                    </div>
+                                </td>
+                                <td>10 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>James Thompson</strong></td>
+                                <td>j.thompson@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Computer Graphics TA (16h)</div>
+                                    </div>
+                                </td>
+                                <td>16 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maria Garcia</strong></td>
+                                <td>m.garcia@university.edu</td>
+                                <td>
+                                    <div class="small">
+                                        <div>• Distributed Systems TA (20h)</div>
+                                    </div>
+                                </td>
+                                <td>20 hours</td>
+                                <td><span class="badge bg-success">Normal</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Workload Distribution Summary</h5>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h3 class="text-danger">3</h3>
+                        <p class="text-muted">TAs with >20 hours</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-success">9</h3>
+                        <p class="text-muted">TAs with ≤20 hours</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-info">5</h3>
+                        <p class="text-muted">TAs with <15 hours</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">TA Workload Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>John Doe - Detailed Breakdown</h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Module Organiser</th>
+                                <th>Hours/Week</th>
+                                <th>Start Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Database Systems TA</td>
+                                <td>Dr. Sarah Johnson</td>
+                                <td>20 hours</td>
+                                <td>May 1, 2026</td>
+                            </tr>
+                            <tr>
+                                <td>Data Structures TA</td>
+                                <td>Prof. Michael Chen</td>
+                                <td>8 hours</td>
+                                <td>May 1, 2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="alert alert-warning">
+                        <strong>Recommendation:</strong> This TA is working 28 hours per week, which exceeds the
+                        recommended maximum of 20 hours. Consider redistributing workload or contacting the module
+                        organisers.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="system-footer">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 BUPT TA System. All rights reserved.</p>
+            <p class="small">Need help? Contact <a href="mailto:support@tams.edu">support@tams.edu</a></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function exportToCSV() {
+            alert('Exporting workload data to CSV...\n\nIn a real implementation, this would generate a CSV file with all TA workload information and trigger a download.');
+        }
+    </script>
+</body>
+
+</html>
