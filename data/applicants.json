@@ -1,0 +1,54 @@
+[
+  {
+    "userId": "U-demo-applicant-1",
+    "fullName": "Demo Applicant One",
+    "phone": "+1 202 555 0101",
+    "studentId": "20260001",
+    "programme": "Software Engineering",
+    "bio": "Interested in software engineering, Java, and agile development modules.",
+    "skills": [
+      "JAVA"
+    ],
+    "preferredWorkingDays": [
+      "Monday",
+      "Wednesday"
+    ],
+    "cvFileName": "cv.pdf",
+    "updatedAt": "2026-04-04T06:04:41.771436300Z"
+  },
+  {
+    "userId": "U-demo-applicant-2",
+    "fullName": "Demo Applicant Two",
+    "phone": "+1 202 555 0102",
+    "studentId": "20260002",
+    "programme": "Computer Science",
+    "bio": "Comfortable supporting database, data structures, and tutoring sessions.",
+    "skills": [
+      "SQL",
+      "Data Structures",
+      "Tutoring"
+    ],
+    "preferredWorkingDays": [
+      "Tuesday",
+      "Thursday"
+    ],
+    "updatedAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "userId": "U-demo-applicant-3",
+    "fullName": "Demo Applicant Three",
+    "phone": "+1 202 555 0103",
+    "studentId": "20260003",
+    "programme": "Artificial Intelligence",
+    "bio": "Focuses on Python, machine learning labs, and student Q\u0026A support.",
+    "skills": [
+      "Python",
+      "Machine Learning",
+      "Student Support"
+    ],
+    "preferredWorkingDays": [
+      "Friday"
+    ],
+    "updatedAt": "2026-03-20T00:00:00Z"
+  }
+]
