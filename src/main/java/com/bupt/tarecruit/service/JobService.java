@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,17 @@ public class JobService {
 
     public List<Job> getAvailableJobs() {
         return sortJobs(filterExpiredJobs(getAllJobs()));
+    }
+
+    public List<Job> searchAvailableJobs(final String keyword) {
+        List<Job> availableJobs = getAvailableJobs();
+        if (keyword == null || keyword.isBlank()) {
+            return availableJobs;
+        }
+        String normalizedKeyword = keyword.trim().toLowerCase(Locale.ROOT);
+        return availableJobs.stream()
+                .filter(job -> matchesKeyword(job, normalizedKeyword))
+                .collect(Collectors.toList());
     }
 
     public List<Job> filterExpiredJobs(final List<Job> jobs) {
@@ -107,5 +119,16 @@ public class JobService {
                 .filter(value -> !value.isBlank())
                 .distinct()
                 .toList();
+    }
+
+    private boolean matchesKeyword(final Job job, final String normalizedKeyword) {
+        return containsIgnoreCase(job.getTitle(), normalizedKeyword)
+                || containsIgnoreCase(job.getDepartment(), normalizedKeyword)
+                || job.getRequirements().stream()
+                        .anyMatch(requirement -> containsIgnoreCase(requirement, normalizedKeyword));
+    }
+
+    private boolean containsIgnoreCase(final String value, final String normalizedKeyword) {
+        return value != null && value.toLowerCase(Locale.ROOT).contains(normalizedKeyword);
     }
 }
