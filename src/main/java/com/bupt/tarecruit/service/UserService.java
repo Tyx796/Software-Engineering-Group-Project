@@ -40,12 +40,16 @@ public class UserService {
     public User login(final String email, final String password) {
         validateLogin(email, password);
         String normalizedEmail = email.trim().toLowerCase();
-        String hash = PasswordUtil.hash(password);
-        return getAllUsers().stream()
-                .filter(user -> user.getEmail().equalsIgnoreCase(normalizedEmail)
-                        && user.getPasswordHash().equals(hash))
+        User user = getAllUsers().stream()
+                .filter(current -> current.getEmail().equalsIgnoreCase(normalizedEmail)
+                        && PasswordUtil.matches(password, current.getPasswordHash()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+        if (PasswordUtil.needsRehash(user.getPasswordHash())) {
+            user.setPasswordHash(PasswordUtil.hash(password));
+            userDao.save(user);
+        }
+        return user;
     }
 
     public Optional<User> findById(final String userId) {
