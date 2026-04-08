@@ -7,10 +7,16 @@
                 <a class="nav-link" href="${pageContext.request.contextPath}/applicant/jobs">Browse Jobs</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/applicant/applications">My Applications</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/applicant/profile">My Profile</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/applicant/cv">My CV</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/applicant/messages">Messages</a>
             </li>
         </c:if>
         <c:if test="${sessionScope.currentUser.role == 'ORGANISER'}">
@@ -19,6 +25,14 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/organiser/jobs/create">Create Job</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/organiser/messages">Messages</a>
+            </li>
+        </c:if>
+        <c:if test="${sessionScope.currentUser.role == 'ADMIN'}">
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/admin/home">Admin Home</a>
             </li>
         </c:if>
     </ul>
