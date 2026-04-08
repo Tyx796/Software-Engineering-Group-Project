@@ -18,7 +18,12 @@ public class ApplicantProfileServlet extends BaseServlet {
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         User user = SessionUtil.currentUser(request);
-        applicantService.findByUserId(user.getId()).ifPresent(profile -> request.setAttribute("profile", profile));
+        applicantService.findByUserId(user.getId()).ifPresent(profile -> {
+            request.setAttribute("profile", profile);
+            request.setAttribute("skillsText", applicantService.formatEntries(profile.getSkills()));
+            request.setAttribute("preferredWorkingDaysText",
+                    applicantService.formatEntries(profile.getPreferredWorkingDays()));
+        });
         forward(request, response, "applicant/profile.jsp");
     }
 
@@ -33,7 +38,9 @@ public class ApplicantProfileServlet extends BaseServlet {
                     request.getParameter("phone"),
                     request.getParameter("studentId"),
                     request.getParameter("programme"),
-                    request.getParameter("bio"));
+                    request.getParameter("bio"),
+                    request.getParameter("skills"),
+                    request.getParameter("preferredWorkingDays"));
             request.getSession().setAttribute("flash", "Profile saved successfully.");
             request.setAttribute("profile", profile);
             redirect(request, response, "/applicant/profile");
@@ -46,6 +53,8 @@ public class ApplicantProfileServlet extends BaseServlet {
             profile.setProgramme(request.getParameter("programme"));
             profile.setBio(request.getParameter("bio"));
             request.setAttribute("profile", profile);
+            request.setAttribute("skillsText", request.getParameter("skills"));
+            request.setAttribute("preferredWorkingDaysText", request.getParameter("preferredWorkingDays"));
             forward(request, response, "applicant/profile.jsp");
         }
     }
