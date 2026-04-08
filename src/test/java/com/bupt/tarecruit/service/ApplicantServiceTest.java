@@ -50,4 +50,74 @@ class ApplicantServiceTest {
         assertEquals(List.of("Java", "Communication"), profile.getSkills());
         assertEquals(List.of("Monday", "Wednesday"), profile.getPreferredWorkingDays());
     }
+
+    @Test
+    void createProfileParsesTextBasedSkillsAndAvailability() throws Exception {
+        Path file = Files.createTempFile("applicants", ".json");
+        ApplicantService service = new ApplicantService(file);
+
+        service.createProfile(
+                "user-1",
+                "Alice Chen",
+                "+86 13800000000",
+                "20260001",
+                "Computer Science",
+                "Tutor",
+                "Java, Communication\nJava",
+                "Monday\nWednesday, Friday");
+
+        Applicant profile = service.findByUserId("user-1").orElseThrow();
+        assertEquals(List.of("Java", "Communication"), profile.getSkills());
+        assertEquals(List.of("Monday", "Wednesday", "Friday"), profile.getPreferredWorkingDays());
+    }
+
+    @Test
+    void oldCreateProfileMethodRemainsCompatible() throws Exception {
+        Path file = Files.createTempFile("applicants", ".json");
+        ApplicantService service = new ApplicantService(file);
+
+        Applicant profile = service.createProfile(
+                "user-1", "Alice Chen", "+86 13800000000", "20260001", "Computer Science", "Tutor");
+
+        assertEquals(List.of(), profile.getSkills());
+        assertEquals(List.of(), profile.getPreferredWorkingDays());
+    }
+
+    @Test
+    void updatingProfileReplacesSkillsAndAvailability() throws Exception {
+        Path file = Files.createTempFile("applicants", ".json");
+        ApplicantService service = new ApplicantService(file);
+
+        service.createProfile(
+                "user-1",
+                "Alice Chen",
+                "+86 13800000000",
+                "20260001",
+                "Computer Science",
+                "Tutor",
+                List.of("Java"),
+                List.of("Monday"));
+
+        service.createProfile(
+                "user-1",
+                "Alice Chen",
+                "+86 13800000000",
+                "20260001",
+                "Computer Science",
+                "Tutor",
+                "Testing, Communication",
+                "Tuesday, Thursday");
+
+        Applicant profile = service.findByUserId("user-1").orElseThrow();
+        assertEquals(List.of("Testing", "Communication"), profile.getSkills());
+        assertEquals(List.of("Tuesday", "Thursday"), profile.getPreferredWorkingDays());
+    }
+
+    @Test
+    void formatEntriesProducesStableDisplayText() throws Exception {
+        Path file = Files.createTempFile("applicants", ".json");
+        ApplicantService service = new ApplicantService(file);
+
+        assertEquals("Java, Communication", service.formatEntries(List.of("Java", "Communication")));
+    }
 }
