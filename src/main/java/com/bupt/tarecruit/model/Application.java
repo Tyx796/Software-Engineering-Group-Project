@@ -7,7 +7,7 @@ public class Application {
     private String id;
     private String applicantUserId;
     private String jobId;
-    private String status;
+    private ApplicationStatus status;
     private Instant appliedAt;
 
     public static Application create(final String applicantUserId, final String jobId) {
@@ -15,7 +15,7 @@ public class Application {
         application.id = "APP-" + UUID.randomUUID();
         application.applicantUserId = applicantUserId;
         application.jobId = jobId;
-        application.status = "PENDING";
+        application.status = ApplicationStatus.PENDING;
         application.appliedAt = Instant.now();
         return application;
     }
@@ -26,8 +26,8 @@ public class Application {
     public void setApplicantUserId(final String applicantUserId) { this.applicantUserId = applicantUserId; }
     public String getJobId() { return jobId; }
     public void setJobId(final String jobId) { this.jobId = jobId; }
-    public String getStatus() { return status; }
-    public void setStatus(final String status) { this.status = status; }
+    public ApplicationStatus getStatus() { return status; }
+    public void setStatus(final ApplicationStatus status) { this.status = status; }
     public Instant getAppliedAt() { return appliedAt; }
     public void setAppliedAt(final Instant appliedAt) { this.appliedAt = appliedAt; }
 }

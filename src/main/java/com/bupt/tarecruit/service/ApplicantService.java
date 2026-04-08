@@ -26,6 +26,12 @@ public class ApplicantService {
 
     public Applicant createProfile(final String userId, final String fullName, final String phone,
                                    final String studentId, final String programme, final String bio) {
+        return createProfile(userId, fullName, phone, studentId, programme, bio, List.of(), List.of());
+    }
+
+    public Applicant createProfile(final String userId, final String fullName, final String phone,
+                                   final String studentId, final String programme, final String bio,
+                                   final List<String> skills, final List<String> preferredWorkingDays) {
         validateProfile(userId, fullName, phone, studentId, programme);
         List<Applicant> profiles = getAllProfiles();
         Applicant profile = profiles.stream()
@@ -41,6 +47,8 @@ public class ApplicantService {
         profile.setStudentId(studentId.trim());
         profile.setProgramme(programme.trim());
         profile.setBio(bio == null ? "" : bio.trim());
+        profile.setSkills(normalizeEntries(skills));
+        profile.setPreferredWorkingDays(normalizeEntries(preferredWorkingDays));
         profile.setUpdatedAt(Instant.now());
         applicantDao.saveAll(profiles);
         return profile;
@@ -72,6 +80,19 @@ public class ApplicantService {
         return applicantDao.findAll();
     }
 
+    public boolean hasCompleteProfile(final String userId) {
+        return findByUserId(userId).filter(this::isProfileComplete).isPresent();
+    }
+
+    public boolean isProfileComplete(final Applicant profile) {
+        return profile != null
+                && isNonBlank(profile.getUserId())
+                && isNonBlank(profile.getFullName())
+                && isNonBlank(profile.getPhone())
+                && isNonBlank(profile.getStudentId())
+                && isNonBlank(profile.getProgramme());
+    }
+
     public void validateProfile(final String userId, final String fullName, final String phone,
                                 final String studentId, final String programme) {
         DataValidator.validateRequired(userId, "User ID");
@@ -79,5 +100,20 @@ public class ApplicantService {
         DataValidator.validatePhone(phone);
         DataValidator.validateRequired(studentId, "Student ID");
         DataValidator.validateRequired(programme, "Programme");
+    }
+
+    private List<String> normalizeEntries(final List<String> values) {
+        if (values == null) {
+            return List.of();
+        }
+        return values.stream()
+                .filter(value -> value != null && !value.isBlank())
+                .map(String::trim)
+                .distinct()
+                .toList();
+    }
+
+    private boolean isNonBlank(final String value) {
+        return value != null && !value.isBlank();
     }
 }
