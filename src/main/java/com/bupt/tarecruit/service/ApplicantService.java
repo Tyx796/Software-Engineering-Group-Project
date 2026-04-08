@@ -80,6 +80,19 @@ public class ApplicantService {
         return applicantDao.findAll();
     }
 
+    public boolean hasCompleteProfile(final String userId) {
+        return findByUserId(userId).filter(this::isProfileComplete).isPresent();
+    }
+
+    public boolean isProfileComplete(final Applicant profile) {
+        return profile != null
+                && isNonBlank(profile.getUserId())
+                && isNonBlank(profile.getFullName())
+                && isNonBlank(profile.getPhone())
+                && isNonBlank(profile.getStudentId())
+                && isNonBlank(profile.getProgramme());
+    }
+
     public void validateProfile(final String userId, final String fullName, final String phone,
                                 final String studentId, final String programme) {
         DataValidator.validateRequired(userId, "User ID");
@@ -98,5 +111,9 @@ public class ApplicantService {
                 .map(String::trim)
                 .distinct()
                 .toList();
+    }
+
+    private boolean isNonBlank(final String value) {
+        return value != null && !value.isBlank();
     }
 }
