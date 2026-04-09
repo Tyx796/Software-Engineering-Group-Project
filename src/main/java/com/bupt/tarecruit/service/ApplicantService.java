@@ -6,6 +6,7 @@ import com.bupt.tarecruit.model.Applicant;
 import com.bupt.tarecruit.util.DataValidator;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,26 @@ public class ApplicantService {
 
     public Applicant createProfile(final String userId, final String fullName, final String phone,
                                    final String studentId, final String programme, final String bio) {
+        return createProfile(userId, fullName, phone, studentId, programme, bio, List.of(), List.of());
+    }
+
+    public Applicant createProfile(final String userId, final String fullName, final String phone,
+                                   final String studentId, final String programme, final String bio,
+                                   final String skillsText, final String preferredWorkingDaysText) {
+        return createProfile(
+                userId,
+                fullName,
+                phone,
+                studentId,
+                programme,
+                bio,
+                parseEntries(skillsText),
+                parseEntries(preferredWorkingDaysText));
+    }
+
+    public Applicant createProfile(final String userId, final String fullName, final String phone,
+                                   final String studentId, final String programme, final String bio,
+                                   final List<String> skills, final List<String> preferredWorkingDays) {
         validateProfile(userId, fullName, phone, studentId, programme);
         List<Applicant> profiles = getAllProfiles();
         Applicant profile = profiles.stream()
@@ -41,6 +62,8 @@ public class ApplicantService {
         profile.setStudentId(studentId.trim());
         profile.setProgramme(programme.trim());
         profile.setBio(bio == null ? "" : bio.trim());
+        profile.setSkills(normalizeEntries(skills));
+        profile.setPreferredWorkingDays(normalizeEntries(preferredWorkingDays));
         profile.setUpdatedAt(Instant.now());
         applicantDao.saveAll(profiles);
         return profile;
@@ -72,6 +95,23 @@ public class ApplicantService {
         return applicantDao.findAll();
     }
 
+    public boolean hasCompleteProfile(final String userId) {
+        return findByUserId(userId).filter(this::isProfileComplete).isPresent();
+    }
+
+    public boolean isProfileComplete(final Applicant profile) {
+        return profile != null
+                && isNonBlank(profile.getUserId())
+                && isNonBlank(profile.getFullName())
+                && isNonBlank(profile.getPhone())
+                && isNonBlank(profile.getStudentId())
+                && isNonBlank(profile.getProgramme());
+    }
+
+    public String formatEntries(final List<String> values) {
+        return String.join(", ", normalizeEntries(values));
+    }
+
     public void validateProfile(final String userId, final String fullName, final String phone,
                                 final String studentId, final String programme) {
         DataValidator.validateRequired(userId, "User ID");
@@ -79,5 +119,27 @@ public class ApplicantService {
         DataValidator.validatePhone(phone);
         DataValidator.validateRequired(studentId, "Student ID");
         DataValidator.validateRequired(programme, "Programme");
+    }
+
+    private List<String> normalizeEntries(final List<String> values) {
+        if (values == null) {
+            return List.of();
+        }
+        return values.stream()
+                .filter(value -> value != null && !value.isBlank())
+                .map(String::trim)
+                .distinct()
+                .toList();
+    }
+
+    private List<String> parseEntries(final String rawText) {
+        if (rawText == null || rawText.isBlank()) {
+            return List.of();
+        }
+        return normalizeEntries(Arrays.asList(rawText.split("\\r?\\n|,")));
+    }
+
+    private boolean isNonBlank(final String value) {
+        return value != null && !value.isBlank();
     }
 }

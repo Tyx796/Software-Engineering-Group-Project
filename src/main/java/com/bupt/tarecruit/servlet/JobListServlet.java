@@ -17,7 +17,9 @@ public class JobListServlet extends BaseServlet {
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("jobs", jobService.getAvailableJobs());
+        String keyword = request.getParameter("keyword");
+        request.setAttribute("jobs", jobService.searchAvailableJobs(keyword));
+        request.setAttribute("searchKeyword", keyword == null ? "" : keyword.trim());
         request.setAttribute("profile", applicantService.findByUserId(SessionUtil.currentUser(request).getId()).orElse(null));
         forward(request, response, "applicant/job_list.jsp");
     }

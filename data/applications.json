@@ -1,0 +1,26 @@
+[
+  {
+    "id": "APP-a2e2c2e9-e407-4fd5-8546-cab444af1ad9",
+    "applicantUserId": "U-demo-applicant-1",
+    "jobId": "J-demo-5",
+    "status": "REVIEWING",
+    "appliedAt": "2026-04-04T06:05:19.205799900Z",
+    "reviewedAt": "2026-04-04T09:45:50.333625600Z"
+  },
+  {
+    "id": "APP-22db8dc0-41ce-42ed-a69e-c1b92107514b",
+    "applicantUserId": "U-demo-applicant-1",
+    "jobId": "J-demo-1",
+    "status": "ACCEPTED",
+    "appliedAt": "2026-04-04T06:05:11.579054900Z",
+    "reviewedAt": "2026-04-04T09:18:31.761401500Z"
+  },
+  {
+    "id": "APP-e0c880ab-c4b5-489f-9dd2-9ac6c461ca6f",
+    "applicantUserId": "U-demo-applicant-1",
+    "jobId": "J-demo-2",
+    "status": "REJECTED",
+    "appliedAt": "2026-04-04T12:20:49.025486500Z",
+    "reviewedAt": "2026-04-04T12:21:07.746967Z"
+  }
+]
