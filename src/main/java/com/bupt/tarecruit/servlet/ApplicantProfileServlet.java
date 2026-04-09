@@ -18,6 +18,8 @@ public class ApplicantProfileServlet extends BaseServlet {
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         User user = SessionUtil.currentUser(request);
+        request.setAttribute("skillsText", "");
+        request.setAttribute("preferredWorkingDaysText", "");
         applicantService.findByUserId(user.getId()).ifPresent(profile -> {
             request.setAttribute("profile", profile);
             request.setAttribute("skillsText", applicantService.formatEntries(profile.getSkills()));

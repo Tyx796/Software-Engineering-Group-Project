@@ -58,6 +58,14 @@ public class ApplicationService {
         return applicationDao.findByApplicantId(applicantUserId);
     }
 
+    public Optional<Application> findByApplicantAndJob(final String applicantUserId, final String jobId) {
+        DataValidator.validateRequired(applicantUserId, "Applicant user ID");
+        DataValidator.validateRequired(jobId, "Job ID");
+        return applicationDao.findByApplicantId(applicantUserId).stream()
+                .filter(application -> application.getJobId().equals(jobId))
+                .findFirst();
+    }
+
     public Optional<Application> getApplicationDetails(final String applicationId) {
         DataValidator.validateRequired(applicationId, "Application ID");
         return applicationDao.findById(applicationId);
@@ -69,8 +77,7 @@ public class ApplicationService {
     }
 
     private boolean hasExistingApplication(final String applicantUserId, final String jobId) {
-        return applicationDao.findByApplicantId(applicantUserId).stream()
-                .anyMatch(application -> application.getJobId().equals(jobId));
+        return findByApplicantAndJob(applicantUserId, jobId).isPresent();
     }
 
     private void validateJobOpenForApplications(final Job job) {
