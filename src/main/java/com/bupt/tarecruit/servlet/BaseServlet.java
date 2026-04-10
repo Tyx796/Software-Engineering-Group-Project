@@ -1,5 +1,6 @@
 package com.bupt.tarecruit.servlet;
 
+import com.bupt.tarecruit.util.ApplicationStatusView;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,5 +24,10 @@ public abstract class BaseServlet extends HttpServlet {
 
     protected void setError(final HttpServletRequest request, final String message) {
         request.setAttribute("error", message);
+    }
+
+    protected void setApplicationStatusView(final HttpServletRequest request) {
+        request.setAttribute("applicationStatusBadgeClasses", ApplicationStatusView.badgeClassByStatusName());
+        request.setAttribute("applicationStatusSummaries", ApplicationStatusView.summaryByStatusName());
     }
 }

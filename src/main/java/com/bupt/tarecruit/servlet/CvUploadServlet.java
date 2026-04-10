@@ -23,6 +23,8 @@ public class CvUploadServlet extends BaseServlet {
             throws ServletException, IOException {
         User user = SessionUtil.currentUser(request);
         request.setAttribute("profile", applicantService.findByUserId(user.getId()).orElse(null));
+        request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(user.getId()));
+        request.setAttribute("currentCvFileName", cvService.currentCvFileName(user.getId()).orElse(""));
         forward(request, response, "applicant/upload_cv.jsp");
     }
 
@@ -32,11 +34,13 @@ public class CvUploadServlet extends BaseServlet {
         User user = SessionUtil.currentUser(request);
         Part part = request.getPart("cv");
         try {
+            boolean replacingExistingCv = cvService.hasUploadedCv(user.getId());
             if (part == null || part.getSubmittedFileName() == null || part.getSubmittedFileName().isBlank()) {
                 throw new IllegalArgumentException("Please choose a CV file.");
             }
             cvService.uploadCV(user.getId(), part.getSubmittedFileName(), part.getInputStream());
-            request.getSession().setAttribute("flash", "CV uploaded successfully.");
+            request.getSession().setAttribute("flash",
+                    replacingExistingCv ? "CV replaced successfully." : "CV uploaded successfully.");
         } catch (IllegalArgumentException | IllegalStateException exception) {
             request.getSession().setAttribute("flash", exception.getMessage());
         }

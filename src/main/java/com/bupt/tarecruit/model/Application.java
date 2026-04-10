@@ -9,6 +9,7 @@ public class Application {
     private String jobId;
     private ApplicationStatus status;
     private Instant appliedAt;
+    private Instant reviewedAt;
 
     public static Application create(final String applicantUserId, final String jobId) {
         Application application = new Application();
@@ -30,4 +31,6 @@ public class Application {
     public void setStatus(final ApplicationStatus status) { this.status = status; }
     public Instant getAppliedAt() { return appliedAt; }
     public void setAppliedAt(final Instant appliedAt) { this.appliedAt = appliedAt; }
+    public Instant getReviewedAt() { return reviewedAt; }
+    public void setReviewedAt(final Instant reviewedAt) { this.reviewedAt = reviewedAt; }
 }
