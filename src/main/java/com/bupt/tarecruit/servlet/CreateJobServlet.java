@@ -18,13 +18,21 @@ public class CreateJobServlet extends BaseServlet {
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("today", LocalDate.now());
-        forward(request, response, "organiser/create_job.jsp");
+        request.setAttribute("formAction", request.getContextPath() + "/organiser/jobs/create");
+        request.setAttribute("formHeading", "Create job posting");
+        request.setAttribute("submitLabel", "Publish job");
+        forward(request, response, "organiser/job_form.jsp");
     }
 
     @Override
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         User user = SessionUtil.currentUser(request);
+        prepareForm(request);
+        request.setAttribute("today", LocalDate.now());
+        request.setAttribute("formAction", request.getContextPath() + "/organiser/jobs/create");
+        request.setAttribute("formHeading", "Create job posting");
+        request.setAttribute("submitLabel", "Publish job");
         try {
             String hoursValue = request.getParameter("hoursPerWeek");
             String deadlineValue = request.getParameter("deadline");
@@ -40,16 +48,22 @@ public class CreateJobServlet extends BaseServlet {
             redirect(request, response, "/organiser/jobs");
         } catch (NumberFormatException exception) {
             setError(request, "Hours per week must be a valid number.");
-            request.setAttribute("today", LocalDate.now());
-            forward(request, response, "organiser/create_job.jsp");
+            forward(request, response, "organiser/job_form.jsp");
         } catch (java.time.format.DateTimeParseException exception) {
             setError(request, "Please choose a valid deadline.");
-            request.setAttribute("today", LocalDate.now());
-            forward(request, response, "organiser/create_job.jsp");
+            forward(request, response, "organiser/job_form.jsp");
         } catch (IllegalArgumentException exception) {
             setError(request, exception.getMessage());
-            request.setAttribute("today", LocalDate.now());
-            forward(request, response, "organiser/create_job.jsp");
+            forward(request, response, "organiser/job_form.jsp");
         }
+    }
+
+    private void prepareForm(final HttpServletRequest request) {
+        request.setAttribute("formTitle", request.getParameter("title"));
+        request.setAttribute("formDepartment", request.getParameter("department"));
+        request.setAttribute("formDescription", request.getParameter("description"));
+        request.setAttribute("formRequirements", request.getParameter("requirements"));
+        request.setAttribute("formHoursPerWeek", request.getParameter("hoursPerWeek"));
+        request.setAttribute("formDeadline", request.getParameter("deadline"));
     }
 }
