@@ -20,6 +20,7 @@
                     <th>Hours/week</th>
                     <th>Deadline</th>
                     <th>Status</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,7 +30,28 @@
                         <td>${job.department}</td>
                         <td>${job.hoursPerWeek}</td>
                         <td>${job.deadline}</td>
-                        <td><span class="badge text-bg-success">${job.status}</span></td>
+                        <td>
+                            <span class="badge ${job.status == 'CANCELLED' ? 'text-bg-secondary' : 'text-bg-success'}">
+                                ${job.status}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <c:if test="${job.status != 'CANCELLED'}">
+                                <a class="btn btn-sm btn-outline-secondary me-2"
+                                   href="${pageContext.request.contextPath}/organiser/jobs/edit?id=${job.id}">
+                                    Edit
+                                </a>
+                                <form method="post" action="${pageContext.request.contextPath}/organiser/jobs/cancel"
+                                      class="d-inline me-2">
+                                    <input type="hidden" name="jobId" value="${job.id}">
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Cancel Job</button>
+                                </form>
+                            </c:if>
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="${pageContext.request.contextPath}/organiser/jobs/applications?jobId=${job.id}">
+                                View Applications
+                            </a>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
