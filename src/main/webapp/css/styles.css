@@ -34,3 +34,52 @@ body {
 .readiness-list .list-group-item {
     background: transparent;
 }
+
+.app-status {
+    background: #e9f2ff;
+    color: #0d3b8a !important;
+    --bs-badge-color: #0d3b8a;
+    border: 1px solid #bfd3ff;
+}
+
+.app-status-pending {
+    background: #f3f4f6;
+    color: #374151 !important;
+    --bs-badge-color: #374151;
+    border-color: #d1d5db;
+}
+
+.app-status-reviewing {
+    background: #fff7e6;
+    color: #9a6700 !important;
+    --bs-badge-color: #9a6700;
+    border-color: #f7d48b;
+}
+
+.app-status-accepted {
+    background: #e9f9ef;
+    color: #0f6b3f !important;
+    --bs-badge-color: #0f6b3f;
+    border-color: #a9e2bf;
+}
+
+.app-status-rejected {
+    background: #fdecec;
+    color: #9f1d1d !important;
+    --bs-badge-color: #9f1d1d;
+    border-color: #f5b5b5;
+}
+
+.app-status-withdrawn {
+    background: #eef2ff;
+    color: #4338ca !important;
+    --bs-badge-color: #4338ca;
+    border-color: #c7d2fe;
+}
+
+.app-status-cancelled {
+    background: #f8fafc;
+    color: #475569 !important;
+    --bs-badge-color: #475569;
+    border-color: #cbd5e1;
+}

@@ -7,7 +7,10 @@
         <h1 class="h3 mb-1">Applicant profile</h1>
         <p class="text-muted mb-0">Complete your profile to get ready for TA applications.</p>
     </div>
-    <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/applicant/jobs">Browse jobs</a>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/applicant/applications">My applications</a>
+        <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/applicant/jobs">Browse jobs</a>
+    </div>
 </div>
 <div class="row g-4">
     <div class="col-lg-8">
@@ -35,6 +38,17 @@
                             <label class="form-label">Bio</label>
                             <textarea class="form-control" name="bio" rows="4" placeholder="Summarise your teaching, tutoring, or academic strengths.">${profile.bio}</textarea>
                         </div>
+                        <div class="col-12">
+                            <label class="form-label">Skills</label>
+                            <textarea class="form-control" name="skills" rows="3"
+                                      placeholder="Use commas or new lines, e.g. Java, SQL, Communication">${skillsText}</textarea>
+                            <div class="form-text">These skills will be used later for application readiness and review.</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Preferred working days</label>
+                            <textarea class="form-control" name="preferredWorkingDays" rows="2"
+                                      placeholder="For example: Monday, Wednesday">${preferredWorkingDaysText}</textarea>
+                        </div>
                     </div>
                     <button class="btn btn-primary mt-3" type="submit">Save profile</button>
                 </form>
@@ -51,9 +65,17 @@
                         <strong>${empty profile.fullName ? 'Pending' : 'Done'}</strong>
                     </li>
                     <li class="list-group-item d-flex justify-content-between px-0">
+                        <span>Skills added</span>
+                        <strong>${empty profile.skills ? 'Pending' : 'Done'}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0">
+                        <span>Availability added</span>
+                        <strong>${empty profile.preferredWorkingDays ? 'Pending' : 'Done'}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0">
                         <span>CV uploaded</span>
                         <c:choose>
-                            <c:when test="${empty profile.cvFileName}"><strong>Pending</strong></c:when>
+                            <c:when test="${not hasUploadedCv}"><strong>Pending</strong></c:when>
                             <c:otherwise><a href="${pageContext.request.contextPath}/applicant/cv/download"><strong>View</strong></a></c:otherwise>
                         </c:choose>
                     </li>

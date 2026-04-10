@@ -3,6 +3,7 @@ package com.bupt.tarecruit.servlet;
 import com.bupt.tarecruit.model.Applicant;
 import com.bupt.tarecruit.model.User;
 import com.bupt.tarecruit.service.ApplicantService;
+import com.bupt.tarecruit.service.CvService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,12 +14,22 @@ import java.io.IOException;
 @WebServlet("/applicant/profile")
 public class ApplicantProfileServlet extends BaseServlet {
     private final ApplicantService applicantService = new ApplicantService();
+    private final CvService cvService = new CvService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         User user = SessionUtil.currentUser(request);
-        applicantService.findByUserId(user.getId()).ifPresent(profile -> request.setAttribute("profile", profile));
+        request.setAttribute("skillsText", "");
+        request.setAttribute("preferredWorkingDaysText", "");
+        request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(user.getId()));
+        request.setAttribute("currentCvFileName", cvService.currentCvFileName(user.getId()).orElse(""));
+        applicantService.findByUserId(user.getId()).ifPresent(profile -> {
+            request.setAttribute("profile", profile);
+            request.setAttribute("skillsText", applicantService.formatEntries(profile.getSkills()));
+            request.setAttribute("preferredWorkingDaysText",
+                    applicantService.formatEntries(profile.getPreferredWorkingDays()));
+        });
         forward(request, response, "applicant/profile.jsp");
     }
 
@@ -33,7 +44,9 @@ public class ApplicantProfileServlet extends BaseServlet {
                     request.getParameter("phone"),
                     request.getParameter("studentId"),
                     request.getParameter("programme"),
-                    request.getParameter("bio"));
+                    request.getParameter("bio"),
+                    request.getParameter("skills"),
+                    request.getParameter("preferredWorkingDays"));
             request.getSession().setAttribute("flash", "Profile saved successfully.");
             request.setAttribute("profile", profile);
             redirect(request, response, "/applicant/profile");
@@ -46,6 +59,8 @@ public class ApplicantProfileServlet extends BaseServlet {
             profile.setProgramme(request.getParameter("programme"));
             profile.setBio(request.getParameter("bio"));
             request.setAttribute("profile", profile);
+            request.setAttribute("skillsText", request.getParameter("skills"));
+            request.setAttribute("preferredWorkingDaysText", request.getParameter("preferredWorkingDays"));
             forward(request, response, "applicant/profile.jsp");
         }
     }
