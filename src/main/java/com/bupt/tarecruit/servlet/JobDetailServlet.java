@@ -33,10 +33,7 @@ public class JobDetailServlet extends BaseServlet {
         String currentUserId = SessionUtil.currentUser(request).getId();
         request.setAttribute("profile", applicantService.findByUserId(currentUserId).orElse(null));
         request.setAttribute("existingApplication",
-                applicationService.getApplicationsByApplicant(currentUserId).stream()
-                        .filter(application -> application.getJobId().equals(jobId))
-                        .findFirst()
-                        .orElse(null));
+                applicationService.findByApplicantAndJob(currentUserId, jobId).orElse(null));
         forward(request, response, "applicant/job_detail.jsp");
     }
 

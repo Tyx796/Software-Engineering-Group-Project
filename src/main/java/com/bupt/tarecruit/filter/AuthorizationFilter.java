@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/applicant/*", "/organiser/*"})
+@WebFilter(urlPatterns = {"/applicant/*", "/organiser/*", "/admin/*"})
 public class AuthorizationFilter implements Filter {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
@@ -23,14 +23,23 @@ public class AuthorizationFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         User user = SessionUtil.currentUser(httpRequest);
         String uri = httpRequest.getRequestURI();
-        if (uri.contains("/applicant/") && !RoleChecker.hasRole(user, Role.APPLICANT)) {
-            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
-        if (uri.contains("/organiser/") && !RoleChecker.hasRole(user, Role.ORGANISER)) {
+        if (!isAuthorized(user, uri)) {
             httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
         chain.doFilter(request, response);
+    }
+
+    static boolean isAuthorized(final User user, final String uri) {
+        if (uri.contains("/applicant/")) {
+            return RoleChecker.hasRole(user, Role.APPLICANT);
+        }
+        if (uri.contains("/organiser/")) {
+            return RoleChecker.hasRole(user, Role.ORGANISER);
+        }
+        if (uri.contains("/admin/")) {
+            return RoleChecker.hasRole(user, Role.ADMIN);
+        }
+        return true;
     }
 }
