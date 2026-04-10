@@ -23,6 +23,8 @@ public class CvUploadServlet extends BaseServlet {
             throws ServletException, IOException {
         User user = SessionUtil.currentUser(request);
         request.setAttribute("profile", applicantService.findByUserId(user.getId()).orElse(null));
+        request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(user.getId()));
+        request.setAttribute("currentCvFileName", cvService.currentCvFileName(user.getId()).orElse(""));
         forward(request, response, "applicant/upload_cv.jsp");
     }
 

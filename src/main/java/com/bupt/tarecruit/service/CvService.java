@@ -73,12 +73,17 @@ public class CvService {
         return cvDao.findByUserId(userId);
     }
 
+    public Optional<CV> findAvailableCvByUserId(final String userId) {
+        return findByUserId(userId)
+                .filter(cv -> Files.exists(cvRootDirectory.resolve(userId).resolve(cv.getFileName())));
+    }
+
     public boolean hasUploadedCv(final String userId) {
-        return findByUserId(userId).isPresent();
+        return findAvailableCvByUserId(userId).isPresent();
     }
 
     public Optional<String> currentCvFileName(final String userId) {
-        return findByUserId(userId).map(CV::getFileName);
+        return findAvailableCvByUserId(userId).map(CV::getFileName);
     }
 
     public Path saveFile(final String userId, final String fileName, final InputStream inputStream) {

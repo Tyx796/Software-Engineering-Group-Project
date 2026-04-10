@@ -3,6 +3,7 @@ package com.bupt.tarecruit.servlet;
 import com.bupt.tarecruit.model.Applicant;
 import com.bupt.tarecruit.model.User;
 import com.bupt.tarecruit.service.ApplicantService;
+import com.bupt.tarecruit.service.CvService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,6 +14,7 @@ import java.io.IOException;
 @WebServlet("/applicant/profile")
 public class ApplicantProfileServlet extends BaseServlet {
     private final ApplicantService applicantService = new ApplicantService();
+    private final CvService cvService = new CvService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -20,6 +22,8 @@ public class ApplicantProfileServlet extends BaseServlet {
         User user = SessionUtil.currentUser(request);
         request.setAttribute("skillsText", "");
         request.setAttribute("preferredWorkingDaysText", "");
+        request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(user.getId()));
+        request.setAttribute("currentCvFileName", cvService.currentCvFileName(user.getId()).orElse(""));
         applicantService.findByUserId(user.getId()).ifPresent(profile -> {
             request.setAttribute("profile", profile);
             request.setAttribute("skillsText", applicantService.formatEntries(profile.getSkills()));
