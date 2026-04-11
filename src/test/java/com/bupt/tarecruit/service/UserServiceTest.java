@@ -4,6 +4,7 @@ import com.bupt.tarecruit.dao.impl.UserDaoImpl;
 import com.bupt.tarecruit.model.Role;
 import com.bupt.tarecruit.model.User;
 import com.bupt.tarecruit.util.PasswordUtil;
+import com.bupt.tarecruit.util.RoleHomeResolver;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
@@ -75,5 +76,26 @@ class UserServiceTest {
                 .getPasswordHash();
         assertTrue(storedHash.startsWith("v2$"));
         assertFalse(PasswordUtil.needsRehash(storedHash));
+    }
+
+    @Test
+    void adminAccountCanLogInAndRetainsAdminRole() throws Exception {
+        Path file = Files.createTempFile("users", ".json");
+        UserService service = new UserService(file);
+
+        service.register("Admin", "admin@example.com", "secret1", Role.ADMIN);
+
+        assertEquals(Role.ADMIN, service.login("admin@example.com", "secret1").getRole());
+    }
+
+    @Test
+    void adminLoginResolvesToAdminHomeLandingPath() throws Exception {
+        Path file = Files.createTempFile("users", ".json");
+        UserService service = new UserService(file);
+
+        service.register("Admin", "admin@example.com", "secret1", Role.ADMIN);
+
+        User admin = service.login("admin@example.com", "secret1");
+        assertEquals("/admin/home", RoleHomeResolver.landingPathFor(admin));
     }
 }
