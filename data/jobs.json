@@ -1,0 +1,122 @@
+[
+  {
+    "id": "J-demo-1",
+    "organiserUserId": "U-demo-organiser-1",
+    "title": "Software Engineering TA",
+    "department": "Computer Science",
+    "description": "Support tutorials, answer student questions, and help review weekly lab work.",
+    "requirements": ["Java", "Git", "Communication"],
+    "hoursPerWeek": 10,
+    "deadline": "2099-04-15",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-2",
+    "organiserUserId": "U-demo-organiser-1",
+    "title": "Database Systems TA",
+    "department": "Computer Science",
+    "description": "Assist with SQL labs, office hours, and marking support for the database module.",
+    "requirements": ["SQL", "Database Design", "Java"],
+    "hoursPerWeek": 12,
+    "deadline": "2099-05-01",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-3",
+    "organiserUserId": "U-demo-organiser-1",
+    "title": "Object-Oriented Programming TA",
+    "department": "Computer Science",
+    "description": "Help with OOP labs, debugging sessions, and code walkthroughs.",
+    "requirements": ["Java", "OOP", "Debugging"],
+    "hoursPerWeek": 8,
+    "deadline": "2099-05-10",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-4",
+    "organiserUserId": "U-demo-organiser-1",
+    "title": "Algorithms TA",
+    "department": "Computer Science",
+    "description": "Run support sessions on algorithmic thinking and complexity analysis.",
+    "requirements": ["Algorithms", "Data Structures", "Problem Solving"],
+    "hoursPerWeek": 9,
+    "deadline": "2099-05-12",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-5",
+    "organiserUserId": "U-demo-organiser-1",
+    "title": "Web Development TA",
+    "department": "Information Systems",
+    "description": "Support HTML, CSS, JavaScript labs and weekly consultation hours.",
+    "requirements": ["HTML", "CSS", "JavaScript"],
+    "hoursPerWeek": 10,
+    "deadline": "2099-05-15",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-6",
+    "organiserUserId": "U-demo-organiser-2",
+    "title": "Operating Systems TA",
+    "department": "Computer Science",
+    "description": "Assist with concurrency, process management, and practical lab support.",
+    "requirements": ["C", "Linux", "Operating Systems"],
+    "hoursPerWeek": 11,
+    "deadline": "2099-05-18",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-7",
+    "organiserUserId": "U-demo-organiser-2",
+    "title": "Computer Networks TA",
+    "department": "Computer Science",
+    "description": "Support packet analysis labs and networking fundamentals tutorials.",
+    "requirements": ["Networking", "Wireshark", "TCP/IP"],
+    "hoursPerWeek": 8,
+    "deadline": "2099-05-20",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-8",
+    "organiserUserId": "U-demo-organiser-2",
+    "title": "Machine Learning TA",
+    "department": "Artificial Intelligence",
+    "description": "Assist with notebook-based labs and foundational ML troubleshooting.",
+    "requirements": ["Python", "Machine Learning", "NumPy"],
+    "hoursPerWeek": 12,
+    "deadline": "2099-05-25",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-9",
+    "organiserUserId": "U-demo-organiser-2",
+    "title": "Discrete Mathematics TA",
+    "department": "Mathematics",
+    "description": "Hold practice sessions on logic, proofs, and combinatorics.",
+    "requirements": ["Logic", "Proof Writing", "Combinatorics"],
+    "hoursPerWeek": 6,
+    "deadline": "2099-05-28",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "J-demo-10",
+    "organiserUserId": "U-demo-organiser-2",
+    "title": "Data Structures TA",
+    "department": "Computer Science",
+    "description": "Support weekly labs on linked lists, trees, graphs, and complexity basics.",
+    "requirements": ["Java", "Data Structures", "Teaching Support"],
+    "hoursPerWeek": 10,
+    "deadline": "2099-06-01",
+    "status": "OPEN",
+    "createdAt": "2026-03-20T00:00:00Z"
+  }
+]
