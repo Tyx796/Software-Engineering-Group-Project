@@ -1,6 +1,7 @@
 package com.bupt.tarecruit.servlet;
 
 import com.bupt.tarecruit.service.ApplicantService;
+import com.bupt.tarecruit.service.CvService;
 import com.bupt.tarecruit.service.JobService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
@@ -13,12 +14,17 @@ import java.io.IOException;
 public class JobListServlet extends BaseServlet {
     private final JobService jobService = new JobService();
     private final ApplicantService applicantService = new ApplicantService();
+    private final CvService cvService = new CvService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("jobs", jobService.getAvailableJobs());
-        request.setAttribute("profile", applicantService.findByUserId(SessionUtil.currentUser(request).getId()).orElse(null));
+        String keyword = request.getParameter("keyword");
+        String currentUserId = SessionUtil.currentUser(request).getId();
+        request.setAttribute("jobs", jobService.searchAvailableJobs(keyword));
+        request.setAttribute("searchKeyword", keyword == null ? "" : keyword.trim());
+        request.setAttribute("profile", applicantService.findByUserId(currentUserId).orElse(null));
+        request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(currentUserId));
         forward(request, response, "applicant/job_list.jsp");
     }
 }

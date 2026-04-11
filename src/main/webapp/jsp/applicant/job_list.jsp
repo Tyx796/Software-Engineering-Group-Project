@@ -8,8 +8,24 @@
         <p class="text-muted mb-0">Browse current openings published by organisers.</p>
     </div>
     <div class="d-flex gap-2">
+        <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/applicant/applications">My applications</a>
         <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/applicant/profile">My profile</a>
         <a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/applicant/cv">My CV</a>
+    </div>
+</div>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" action="${pageContext.request.contextPath}/applicant/jobs" class="row g-3 align-items-end">
+            <div class="col-lg-9">
+                <label class="form-label mb-1" for="keyword">Keyword search</label>
+                <input class="form-control" id="keyword" type="text" name="keyword" value="${searchKeyword}"
+                       placeholder="Search by title, department, or requirement">
+            </div>
+            <div class="col-lg-3 d-flex gap-2">
+                <button class="btn btn-primary flex-grow-1" type="submit">Search</button>
+                <a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/applicant/jobs">Reset</a>
+            </div>
+        </form>
     </div>
 </div>
 <div class="row g-3 mb-4">
@@ -20,11 +36,14 @@
         <div class="card shadow-sm stat-card"><div class="card-body"><div class="small text-muted">Profile status</div><div class="h4 mb-0">${empty profile ? 'Not ready' : 'Ready'}</div></div></div>
     </div>
     <div class="col-md-4">
-        <div class="card shadow-sm stat-card"><div class="card-body"><div class="small text-muted">CV status</div><div class="h4 mb-0">${empty profile.cvFileName ? 'Missing' : 'Uploaded'}</div></div></div>
+        <div class="card shadow-sm stat-card"><div class="card-body"><div class="small text-muted">CV status</div><div class="h4 mb-0">${hasUploadedCv ? 'Uploaded' : 'Missing'}</div></div></div>
     </div>
 </div>
 <c:if test="${empty profile}">
-    <div class="alert alert-warning">Complete your profile before uploading a CV or preparing to apply in Iteration 2.</div>
+    <div class="alert alert-warning">Complete your profile before uploading a CV or applying for jobs.</div>
+</c:if>
+<c:if test="${not empty searchKeyword}">
+    <div class="alert alert-light border">Showing search results for <strong>${searchKeyword}</strong>.</div>
 </c:if>
 <div class="row g-4">
     <c:forEach items="${jobs}" var="job">
