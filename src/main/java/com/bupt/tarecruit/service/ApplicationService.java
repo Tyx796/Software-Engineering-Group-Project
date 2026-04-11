@@ -29,12 +29,12 @@ public class ApplicationService {
     }
 
     public ApplicationService(final ApplicantService applicantService, final JobService jobService,
-            final CvService cvService, final ApplicationDao applicationDao) {
+                              final CvService cvService, final ApplicationDao applicationDao) {
         this(applicantService, jobService, cvService, applicationDao, new MessageService());
     }
 
     public ApplicationService(final ApplicantService applicantService, final JobService jobService,
-            final CvService cvService, final ApplicationDao applicationDao, final MessageService messageService) {
+                              final CvService cvService, final ApplicationDao applicationDao, final MessageService messageService) {
         this.applicantService = applicantService;
         this.jobService = jobService;
         this.cvService = cvService;
@@ -68,6 +68,18 @@ public class ApplicationService {
     public List<Application> getApplicationsByApplicant(final String applicantUserId) {
         DataValidator.validateRequired(applicantUserId, "Applicant user ID");
         return applicationDao.findByApplicantId(applicantUserId);
+    }
+
+    public Optional<Application> findByApplicantAndJob(final String applicantUserId, final String jobId) {
+        DataValidator.validateRequired(applicantUserId, "Applicant user ID");
+        DataValidator.validateRequired(jobId, "Job ID");
+        return applicationDao.findByApplicantId(applicantUserId).stream()
+                .filter(application -> application.getJobId().equals(jobId))
+                .filter(application -> blocksNewApplication(application.getStatus()))
+                .sorted(Comparator.comparing(
+                        Application::getAppliedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder())).reversed())
+                .findFirst();
     }
 
     public Optional<Application> getApplicationDetails(final String applicationId) {
@@ -111,7 +123,7 @@ public class ApplicationService {
     }
 
     public Application updateStatusForOrganiser(final String organiserUserId, final String applicationId,
-            final ApplicationStatus status) {
+                                                final ApplicationStatus status) {
         DataValidator.validateRequired(organiserUserId, "Organiser user ID");
         DataValidator.validateRequired(applicationId, "Application ID");
         if (status == null) {
@@ -153,19 +165,6 @@ public class ApplicationService {
             sendAcceptedWithdrawalMessage(application);
         }
         return application;
-    }
-
-    public Optional<Application> findByApplicantAndJob(final String applicantUserId, final String jobId) {
-        DataValidator.validateRequired(applicantUserId, "Applicant user ID");
-        DataValidator.validateRequired(jobId, "Job ID");
-        return applicationDao.findByApplicantId(applicantUserId).stream()
-                .filter(application -> application.getJobId().equals(jobId))
-                .anyMatch(application -> blocksNewApplication(application.getStatus()))
-                ? applicationDao.findByApplicantId(applicantUserId).stream()
-                        .filter(application -> application.getJobId().equals(jobId))
-                        .filter(application -> blocksNewApplication(application.getStatus()))
-                        .findFirst()
-                : Optional.empty();
     }
 
     private boolean hasExistingApplication(final String applicantUserId, final String jobId) {
