@@ -31,6 +31,7 @@ public class MyApplicationsServlet extends BaseServlet {
                 .collect(Collectors.toMap(Job::getId, Function.identity(), (left, right) -> left));
         request.setAttribute("applications", applications);
         request.setAttribute("jobsById", jobsById);
+        setApplicationStatusView(request);
         forward(request, response, "applicant/applications.jsp");
     }
 }

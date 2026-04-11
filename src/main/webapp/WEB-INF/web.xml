@@ -25,11 +25,13 @@
         <filter-name>AuthenticationFilter</filter-name>
         <url-pattern>/applicant/*</url-pattern>
         <url-pattern>/organiser/*</url-pattern>
+        <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AuthorizationFilter</filter-name>
         <url-pattern>/applicant/*</url-pattern>
         <url-pattern>/organiser/*</url-pattern>
+        <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
 
     <!-- Error pages -->

@@ -1,7 +1,7 @@
 package com.bupt.tarecruit.servlet;
 
-import com.bupt.tarecruit.model.Role;
 import com.bupt.tarecruit.model.User;
+import com.bupt.tarecruit.util.RoleHomeResolver;
 import com.bupt.tarecruit.service.UserService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
@@ -26,15 +26,7 @@ public class LoginServlet extends BaseServlet {
         try {
             User user = userService.login(request.getParameter("email"), request.getParameter("password"));
             SessionUtil.login(request, user);
-            if (user.getRole() == Role.APPLICANT) {
-                redirect(request, response, "/applicant/jobs");
-                return;
-            }
-            if (user.getRole() == Role.ORGANISER) {
-                redirect(request, response, "/organiser/jobs");
-                return;
-            }
-            redirect(request, response, "/login");
+            redirect(request, response, RoleHomeResolver.landingPathFor(user));
         } catch (IllegalArgumentException exception) {
             setError(request, exception.getMessage());
             request.setAttribute("formEmail", request.getParameter("email"));

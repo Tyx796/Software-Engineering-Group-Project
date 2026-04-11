@@ -12,6 +12,8 @@ class ApplicationStatusViewTest {
         assertEquals("app-status-reviewing", ApplicationStatusView.badgeClassFor(ApplicationStatus.REVIEWING));
         assertEquals("app-status-accepted", ApplicationStatusView.badgeClassFor(ApplicationStatus.ACCEPTED));
         assertEquals("app-status-rejected", ApplicationStatusView.badgeClassFor(ApplicationStatus.REJECTED));
+        assertEquals("app-status-withdrawn", ApplicationStatusView.badgeClassFor(ApplicationStatus.WITHDRAWN));
+        assertEquals("app-status-cancelled", ApplicationStatusView.badgeClassFor(ApplicationStatus.CANCELLED));
     }
 
     @Test
@@ -20,6 +22,10 @@ class ApplicationStatusViewTest {
         assertEquals("An organiser is reviewing your application.", ApplicationStatusView.summaryFor(ApplicationStatus.REVIEWING));
         assertEquals("Your application has been accepted.", ApplicationStatusView.summaryFor(ApplicationStatus.ACCEPTED));
         assertEquals("Your application has been rejected.", ApplicationStatusView.summaryFor(ApplicationStatus.REJECTED));
+        assertEquals("You withdrew this application.", ApplicationStatusView.summaryFor(ApplicationStatus.WITHDRAWN));
+        assertEquals(
+                "This application was cancelled because the job was cancelled.",
+                ApplicationStatusView.summaryFor(ApplicationStatus.CANCELLED));
     }
 
     @Test
