@@ -25,12 +25,13 @@ public class MyApplicationsServlet extends BaseServlet {
             throws ServletException, IOException {
         String userId = SessionUtil.currentUser(request).getId();
         var applications = applicationService.getApplicationsByApplicant(userId).stream()
-                .sorted(Comparator.comparing(Application::getAppliedAt).reversed())
+                .sorted(Comparator.comparing(Application::getAppliedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
                 .toList();
         Map<String, Job> jobsById = jobService.getAllJobs().stream()
                 .collect(Collectors.toMap(Job::getId, Function.identity(), (left, right) -> left));
         request.setAttribute("applications", applications);
         request.setAttribute("jobsById", jobsById);
+        setApplicationStatusView(request);
         forward(request, response, "applicant/applications.jsp");
     }
 }
