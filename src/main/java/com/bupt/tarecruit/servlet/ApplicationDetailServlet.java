@@ -36,6 +36,7 @@ public class ApplicationDetailServlet extends BaseServlet {
 
         request.setAttribute("application", application);
         request.setAttribute("job", jobService.findById(application.getJobId()).orElse(null));
+        setApplicationStatusView(request);
         forward(request, response, "applicant/application_detail.jsp");
     }
 }

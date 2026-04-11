@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.bupt.tarecruit.dao.impl.CvDaoImpl;
+import com.bupt.tarecruit.model.CV;
 import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
 class CvServiceTest {
@@ -77,5 +79,26 @@ class CvServiceTest {
 
         assertTrue(cvService.hasUploadedCv("user-1"));
         assertEquals("cv.pdf", cvService.currentCvFileName("user-1").orElseThrow());
+    }
+
+    @Test
+    void staleMetadataWithoutDiskFileIsNotShownAsUploaded() throws Exception {
+        Path applicantsFile = Files.createTempFile("applicants", ".json");
+        Path cvsFile = Files.createTempFile("cvs", ".json");
+        Path cvRootDirectory = Files.createTempDirectory("cv-root");
+        ApplicantService applicantService = new ApplicantService(applicantsFile);
+        applicantService.createProfile("user-1", "Alice", "+1 202 555 0100", "20260001", "CS", "");
+        CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile), cvRootDirectory);
+
+        CV cv = new CV();
+        cv.setUserId("user-1");
+        cv.setFileName("cv.pdf");
+        cv.setFileType("pdf");
+        cv.setUploadedAt(Instant.now());
+        new CvDaoImpl(cvsFile).save(cv);
+
+        assertFalse(cvService.hasUploadedCv("user-1"));
+        assertTrue(cvService.currentCvFileName("user-1").isEmpty());
+        assertTrue(cvService.findAvailableCvByUserId("user-1").isEmpty());
     }
 }

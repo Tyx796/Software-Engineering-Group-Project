@@ -2,6 +2,7 @@ package com.bupt.tarecruit.servlet;
 
 import com.bupt.tarecruit.service.ApplicantService;
 import com.bupt.tarecruit.service.ApplicationService;
+import com.bupt.tarecruit.service.CvService;
 import com.bupt.tarecruit.service.JobService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,7 @@ public class JobDetailServlet extends BaseServlet {
     private final JobService jobService = new JobService();
     private final ApplicantService applicantService = new ApplicantService();
     private final ApplicationService applicationService = new ApplicationService();
+    private final CvService cvService = new CvService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -32,8 +34,10 @@ public class JobDetailServlet extends BaseServlet {
         request.setAttribute("job", job);
         String currentUserId = SessionUtil.currentUser(request).getId();
         request.setAttribute("profile", applicantService.findByUserId(currentUserId).orElse(null));
+        request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(currentUserId));
         request.setAttribute("existingApplication",
                 applicationService.findByApplicantAndJob(currentUserId, jobId).orElse(null));
+        setApplicationStatusView(request);
         forward(request, response, "applicant/job_detail.jsp");
     }
 
