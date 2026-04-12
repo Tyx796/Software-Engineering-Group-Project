@@ -1,0 +1,50 @@
+[
+  {
+    "id": "U-demo-organiser-2",
+    "username": "organiser_demo_2",
+    "email": "organiser2@example.com",
+    "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+    "role": "ORGANISER",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "U-demo-applicant-1",
+    "username": "applicant_demo_1",
+    "email": "applicant1@example.com",
+    "passwordHash": "v2$7148d810d6d371a7d87b05e6fefb5fd0$9400e0e9cfcaa9694de96f0f545c62720a68dde67c7c9cebb0d23fa90154e7bf",
+    "role": "APPLICANT",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "U-demo-applicant-2",
+    "username": "applicant_demo_2",
+    "email": "applicant2@example.com",
+    "passwordHash": "v2$9582f78f5143a24d59654a2eed9d4e8a$45d3e4bd81eaf441edba7450a0c488ab807823fa9f6188902b453c737f934270",
+    "role": "APPLICANT",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "U-demo-organiser-1",
+    "username": "organiser_demo_1",
+    "email": "organiser1@example.com",
+    "passwordHash": "v2$cbcd802da0ce7c981d75ba17c5c7d7c8$628abd994c1600d7a726fa9081d83998bd52b8939bc5469b80549046cda07b1d",
+    "role": "ORGANISER",
+    "createdAt": "2026-03-20T00:00:00Z"
+  },
+  {
+    "id": "U-28c0ed67-7396-4c9a-bc0d-52973ea4ef01",
+    "username": "1111",
+    "email": "3423432@qq.com",
+    "passwordHash": "v2$1ba27b641041509df3dad9bfe41cb252$122f1746097643fc1b0f59e6b672c4165f906afc1cbf2d5f611dc5f86e1edc9c",
+    "role": "ADMIN",
+    "createdAt": "2026-04-04T06:27:22.723549800Z"
+  },
+  {
+    "id": "U-demo-applicant-3",
+    "username": "applicant_demo_3",
+    "email": "applicant3@example.com",
+    "passwordHash": "v2$4733dff05c0c7cd19ed9fe77d3d04068$f5511f5c50f7edb50f106d88845640eee9bd24c0eeec0a23c9f93bc83b7c9ab8",
+    "role": "APPLICANT",
+    "createdAt": "2026-03-20T00:00:00Z"
+  }
+]
