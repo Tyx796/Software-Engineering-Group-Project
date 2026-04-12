@@ -14,7 +14,9 @@ public final class ApplicationStatusView {
                 ApplicationStatus.PENDING, "app-status-pending",
                 ApplicationStatus.REVIEWING, "app-status-reviewing",
                 ApplicationStatus.ACCEPTED, "app-status-accepted",
-                ApplicationStatus.REJECTED, "app-status-rejected")));
+                ApplicationStatus.REJECTED, "app-status-rejected",
+                ApplicationStatus.WITHDRAWN, "app-status-withdrawn",
+                ApplicationStatus.CANCELLED, "app-status-cancelled")));
     }
 
     public static Map<String, String> summaryByStatusName() {
@@ -22,7 +24,9 @@ public final class ApplicationStatusView {
                 ApplicationStatus.PENDING, "Waiting for organiser review.",
                 ApplicationStatus.REVIEWING, "An organiser is reviewing your application.",
                 ApplicationStatus.ACCEPTED, "Your application has been accepted.",
-                ApplicationStatus.REJECTED, "Your application has been rejected.")));
+                ApplicationStatus.REJECTED, "Your application has been rejected.",
+                ApplicationStatus.WITHDRAWN, "You withdrew this application.",
+                ApplicationStatus.CANCELLED, "This application was cancelled because the job was cancelled.")));
     }
 
     public static String badgeClassFor(final ApplicationStatus status) {
