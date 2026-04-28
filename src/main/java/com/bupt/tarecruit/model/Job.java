@@ -14,6 +14,7 @@ public class Job {
     private String description;
     private List<String> requirements = new ArrayList<>();
     private int hoursPerWeek;
+    private Integer assistantQuota;
     private LocalDate deadline;
     private String status;
     private Instant createdAt;
@@ -23,6 +24,7 @@ public class Job {
         job.id = "J-" + UUID.randomUUID();
         job.organiserUserId = organiserUserId;
         job.status = "OPEN";
+        job.assistantQuota = 1;
         job.createdAt = Instant.now();
         return job;
     }
@@ -41,6 +43,8 @@ public class Job {
     public void setRequirements(final List<String> requirements) { this.requirements = requirements; }
     public int getHoursPerWeek() { return hoursPerWeek; }
     public void setHoursPerWeek(final int hoursPerWeek) { this.hoursPerWeek = hoursPerWeek; }
+    public int getAssistantQuota() { return assistantQuota == null ? 1 : assistantQuota; }
+    public void setAssistantQuota(final Integer assistantQuota) { this.assistantQuota = assistantQuota; }
     public LocalDate getDeadline() { return deadline; }
     public void setDeadline(final LocalDate deadline) { this.deadline = deadline; }
     public String getStatus() { return status; }
