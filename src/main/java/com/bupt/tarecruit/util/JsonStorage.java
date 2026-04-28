@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public final class JsonStorage {
     private static final Gson GSON = new GsonBuilder()
@@ -46,6 +47,41 @@ public final class JsonStorage {
             Files.createDirectories(path.getParent());
             try (Writer writer = Files.newBufferedWriter(path)) {
                 GSON.toJson(items, writer);
+            }
+        } catch (Exception exception) {
+            throw new IllegalStateException("Unable to write " + path, exception);
+        }
+    }
+
+    public static synchronized <T> T readObject(
+            final Path path,
+            final Class<T> type,
+            final Supplier<T> defaultSupplier) {
+        try {
+            if (Files.notExists(path)) {
+                T defaultValue = defaultSupplier.get();
+                writeObject(path, defaultValue);
+                return defaultValue;
+            }
+            try (Reader reader = Files.newBufferedReader(path)) {
+                T item = GSON.fromJson(reader, type);
+                if (item != null) {
+                    return item;
+                }
+            }
+            T defaultValue = defaultSupplier.get();
+            writeObject(path, defaultValue);
+            return defaultValue;
+        } catch (Exception exception) {
+            throw new IllegalStateException("Unable to read " + path, exception);
+        }
+    }
+
+    public static synchronized void writeObject(final Path path, final Object item) {
+        try {
+            Files.createDirectories(path.getParent());
+            try (Writer writer = Files.newBufferedWriter(path)) {
+                GSON.toJson(item, writer);
             }
         } catch (Exception exception) {
             throw new IllegalStateException("Unable to write " + path, exception);
