@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.bupt.tarecruit.dao.impl.ApplicantLimitPolicyDaoImpl;
 import com.bupt.tarecruit.dao.impl.ApplicantDaoImpl;
 import com.bupt.tarecruit.dao.impl.ApplicationDaoImpl;
 import com.bupt.tarecruit.dao.impl.CvDaoImpl;
+import com.bupt.tarecruit.dao.impl.JobDaoImpl;
 import com.bupt.tarecruit.model.Message;
 import com.bupt.tarecruit.model.MessageType;
 import com.bupt.tarecruit.model.Applicant;
@@ -162,6 +164,60 @@ class ApplicationServiceTest {
     }
 
     @Test
+    void submitApplicationRejectsWhenApplicantHasReachedLimit() throws Exception {
+        TestContext context = createContext();
+        context.settingsService.updateDefaultApplicantApplicationLimit(1);
+        Job firstJob = createOpenJob(context.jobService, "organiser-1");
+        Job secondJob = createOpenJob(context.jobService, "organiser-1");
+        createCompleteProfile(context.applicantService, "user-1");
+        saveCv(context, "user-1", "cv.pdf");
+
+        context.applicationService.submitApplication("user-1", firstJob.getId());
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> context.applicationService.submitApplication("user-1", secondJob.getId()));
+        assertEquals(
+                "You have reached your application limit. Please contact Admin if you need an adjustment.",
+                exception.getMessage());
+    }
+
+    @Test
+    void limitReachedDoesNotCreateAdditionalApplicationRecord() throws Exception {
+        TestContext context = createContext();
+        context.settingsService.updateDefaultApplicantApplicationLimit(1);
+        Job firstJob = createOpenJob(context.jobService, "organiser-1");
+        Job secondJob = createOpenJob(context.jobService, "organiser-1");
+        createCompleteProfile(context.applicantService, "user-1");
+        saveCv(context, "user-1", "cv.pdf");
+
+        context.applicationService.submitApplication("user-1", firstJob.getId());
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> context.applicationService.submitApplication("user-1", secondJob.getId()));
+
+        assertEquals(1, context.applicationService.getApplicationsByApplicant("user-1").size());
+    }
+
+    @Test
+    void submitApplicationRejectsWhenJobIsAlreadyFull() throws Exception {
+        TestContext context = createContext();
+        Job job = createOpenJob(context.jobService, "organiser-1");
+        createCompleteProfile(context.applicantService, "user-1");
+        createCompleteProfile(context.applicantService, "user-2");
+        saveCv(context, "user-1", "cv.pdf");
+        saveCv(context, "user-2", "cv.pdf");
+
+        Application first = context.applicationService.submitApplication("user-1", job.getId());
+        context.applicationService.updateStatusForOrganiser("organiser-1", first.getId(), ApplicationStatus.ACCEPTED);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> context.applicationService.submitApplication("user-2", job.getId()));
+        assertEquals("This job is already full.", exception.getMessage());
+    }
+
+    @Test
     void getApplicationsByApplicantAndJobReturnsMatchingRecords() throws Exception {
         TestContext context = createContext();
         Job jobOne = createOpenJob(context.jobService, "organiser-1");
@@ -283,6 +339,59 @@ class ApplicationServiceTest {
         assertNotNull(accepted.getReviewedAt());
         assertEquals(ApplicationStatus.ACCEPTED,
                 context.applicationService.getApplicationDetails(application.getId()).orElseThrow().getStatus());
+    }
+
+    @Test
+    void organiserCannotAcceptApplicationWhenJobIsAlreadyFull() throws Exception {
+        TestContext context = createContext();
+        Job ownedJob = createOpenJob(context.jobService, "organiser-1");
+        createCompleteProfile(context.applicantService, "user-1");
+        createCompleteProfile(context.applicantService, "user-2");
+        saveCv(context, "user-1", "cv.pdf");
+        saveCv(context, "user-2", "cv.pdf");
+
+        Application accepted = context.applicationService.submitApplication("user-1", ownedJob.getId());
+        context.applicationService.updateStatusForOrganiser("organiser-1", accepted.getId(), ApplicationStatus.ACCEPTED);
+
+        Application manuallyInsertedPending = Application.create("user-2", ownedJob.getId());
+        context.applicationDao.save(manuallyInsertedPending);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> context.applicationService.updateStatusForOrganiser(
+                        "organiser-1",
+                        manuallyInsertedPending.getId(),
+                        ApplicationStatus.ACCEPTED));
+        assertEquals("This job is already full.", exception.getMessage());
+    }
+
+    @Test
+    void acceptingFinalSlotRejectsOtherPendingAndReviewingApplicationsForSameJob() throws Exception {
+        TestContext context = createContext();
+        Job ownedJob = createOpenJob(context.jobService, "organiser-1");
+        createCompleteProfile(context.applicantService, "user-1");
+        createCompleteProfile(context.applicantService, "user-2");
+        createCompleteProfile(context.applicantService, "user-3");
+        saveCv(context, "user-1", "cv.pdf");
+        saveCv(context, "user-2", "cv.pdf");
+        saveCv(context, "user-3", "cv.pdf");
+
+        Application accepted = context.applicationService.submitApplication("user-1", ownedJob.getId());
+        Application pending = context.applicationService.submitApplication("user-2", ownedJob.getId());
+        Application reviewing = context.applicationService.submitApplication("user-3", ownedJob.getId());
+        context.applicationService.openApplicationForOrganiser("organiser-1", reviewing.getId());
+
+        context.applicationService.updateStatusForOrganiser("organiser-1", accepted.getId(), ApplicationStatus.ACCEPTED);
+
+        assertEquals(ApplicationStatus.ACCEPTED,
+                context.applicationService.getApplicationDetails(accepted.getId()).orElseThrow().getStatus());
+        Application autoRejectedPending = context.applicationService.getApplicationDetails(pending.getId()).orElseThrow();
+        Application autoRejectedReviewing =
+                context.applicationService.getApplicationDetails(reviewing.getId()).orElseThrow();
+        assertEquals(ApplicationStatus.REJECTED, autoRejectedPending.getStatus());
+        assertNotNull(autoRejectedPending.getReviewedAt());
+        assertEquals(ApplicationStatus.REJECTED, autoRejectedReviewing.getStatus());
+        assertNotNull(autoRejectedReviewing.getReviewedAt());
     }
 
     @Test
@@ -524,17 +633,28 @@ class ApplicationServiceTest {
         Path cvsFile = Files.createTempFile("cvs", ".json");
         Path applicationsFile = Files.createTempFile("applications", ".json");
         Path messagesFile = Files.createTempFile("messages", ".json");
+        Path settingsFile = Files.createTempFile("settings", ".json");
+        Path policiesFile = Files.createTempFile("applicant-limit-policies", ".json");
 
         ApplicantService applicantService = new ApplicantService(applicantsFile);
-        JobService jobService = new JobService(jobsFile);
+        ApplicationDaoImpl applicationDao = new ApplicationDaoImpl(applicationsFile);
+        JobDaoImpl jobDao = new JobDaoImpl(jobsFile);
+        JobService jobService = new JobService(jobDao);
         CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile));
         MessageService messageService = new MessageService(messagesFile);
+        SettingsService settingsService = new SettingsService(settingsFile);
+        RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService(
+                applicationDao,
+                jobDao,
+                new ApplicantLimitPolicyDaoImpl(policiesFile),
+                settingsService);
         ApplicationService applicationService = new ApplicationService(
                 applicantService,
                 jobService,
                 cvService,
-                new ApplicationDaoImpl(applicationsFile),
-                messageService);
+                applicationDao,
+                messageService,
+                recruitmentPolicyService);
 
         return new TestContext(
                 applicantService,
@@ -542,6 +662,8 @@ class ApplicationServiceTest {
                 cvService,
                 applicationService,
                 messageService,
+                applicationDao,
+                settingsService,
                 applicantsFile,
                 cvsFile,
                 applicationsFile);
@@ -578,18 +700,23 @@ class ApplicationServiceTest {
         private final CvService cvService;
         private final ApplicationService applicationService;
         private final MessageService messageService;
+        private final ApplicationDaoImpl applicationDao;
+        private final SettingsService settingsService;
         private final Path applicantsFile;
         private final Path cvsFile;
         private final Path applicationsFile;
 
         private TestContext(final ApplicantService applicantService, final JobService jobService,
-                final CvService cvService, final ApplicationService applicationService, final MessageService messageService,
-                final Path applicantsFile, final Path cvsFile, final Path applicationsFile) {
+                            final CvService cvService, final ApplicationService applicationService, final MessageService messageService,
+                            final ApplicationDaoImpl applicationDao, final SettingsService settingsService,
+                            final Path applicantsFile, final Path cvsFile, final Path applicationsFile) {
             this.applicantService = applicantService;
             this.jobService = jobService;
             this.cvService = cvService;
             this.applicationService = applicationService;
             this.messageService = messageService;
+            this.applicationDao = applicationDao;
+            this.settingsService = settingsService;
             this.applicantsFile = applicantsFile;
             this.cvsFile = cvsFile;
             this.applicationsFile = applicationsFile;

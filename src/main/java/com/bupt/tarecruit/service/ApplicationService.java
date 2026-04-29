@@ -14,11 +14,16 @@ import java.util.List;
 import java.util.Optional;
 
 public class ApplicationService {
+    private static final String APPLICANT_LIMIT_REACHED_MESSAGE =
+            "You have reached your application limit. Please contact Admin if you need an adjustment.";
+    private static final String JOB_FULL_MESSAGE = "This job is already full.";
+
     private final ApplicantService applicantService;
     private final JobService jobService;
     private final CvService cvService;
     private final ApplicationDao applicationDao;
     private final MessageService messageService;
+    private final RecruitmentPolicyService recruitmentPolicyService;
 
     public ApplicationService() {
         this.applicantService = new ApplicantService();
@@ -26,20 +31,28 @@ public class ApplicationService {
         this.cvService = new CvService(applicantService);
         this.applicationDao = new ApplicationDaoImpl();
         this.messageService = new MessageService();
+        this.recruitmentPolicyService = new RecruitmentPolicyService();
     }
 
     public ApplicationService(final ApplicantService applicantService, final JobService jobService,
                               final CvService cvService, final ApplicationDao applicationDao) {
-        this(applicantService, jobService, cvService, applicationDao, new MessageService());
+        this(applicantService, jobService, cvService, applicationDao, new MessageService(), new RecruitmentPolicyService());
     }
 
     public ApplicationService(final ApplicantService applicantService, final JobService jobService,
                               final CvService cvService, final ApplicationDao applicationDao, final MessageService messageService) {
+        this(applicantService, jobService, cvService, applicationDao, messageService, new RecruitmentPolicyService());
+    }
+
+    public ApplicationService(final ApplicantService applicantService, final JobService jobService,
+                              final CvService cvService, final ApplicationDao applicationDao, final MessageService messageService,
+                              final RecruitmentPolicyService recruitmentPolicyService) {
         this.applicantService = applicantService;
         this.jobService = jobService;
         this.cvService = cvService;
         this.applicationDao = applicationDao;
         this.messageService = messageService;
+        this.recruitmentPolicyService = recruitmentPolicyService;
     }
 
     public Application submitApplication(final String applicantUserId, final String jobId) {
@@ -55,10 +68,14 @@ public class ApplicationService {
         if (hasExistingApplication(applicantUserId, jobId)) {
             throw new IllegalArgumentException("You have already applied for this job.");
         }
+        if (recruitmentPolicyService.hasReachedApplicationLimit(applicantUserId)) {
+            throw new IllegalArgumentException(APPLICANT_LIMIT_REACHED_MESSAGE);
+        }
 
         Job job = jobService.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("The selected job does not exist."));
         validateJobOpenForApplications(job);
+        validateJobHasAvailableSlots(job.getId());
 
         Application application = Application.create(applicantUserId, jobId);
         applicationDao.save(application);
@@ -137,11 +154,17 @@ public class ApplicationService {
         if (isFinalStatus(application.getStatus())) {
             throw new IllegalArgumentException("A final decision has already been made for this application.");
         }
+        if (status == ApplicationStatus.ACCEPTED) {
+            validateJobHasAvailableSlots(application.getJobId());
+        }
         application.setStatus(status);
         if (application.getReviewedAt() == null) {
             application.setReviewedAt(Instant.now());
         }
         applicationDao.save(application);
+        if (status == ApplicationStatus.ACCEPTED) {
+            rejectRemainingActiveApplicationsIfJobFilled(application);
+        }
         return application;
     }
 
@@ -180,6 +203,30 @@ public class ApplicationService {
         if (job.getDeadline() == null || job.getDeadline().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("This job is no longer accepting applications.");
         }
+    }
+
+    private void validateJobHasAvailableSlots(final String jobId) {
+        if (recruitmentPolicyService.isJobFull(jobId)) {
+            throw new IllegalArgumentException(JOB_FULL_MESSAGE);
+        }
+    }
+
+    private void rejectRemainingActiveApplicationsIfJobFilled(final Application acceptedApplication) {
+        if (!recruitmentPolicyService.isJobFull(acceptedApplication.getJobId())) {
+            return;
+        }
+        Instant rejectionTime = Instant.now();
+        applicationDao.findByJobId(acceptedApplication.getJobId()).stream()
+                .filter(application -> !acceptedApplication.getId().equals(application.getId()))
+                .filter(application -> application.getStatus() == ApplicationStatus.PENDING
+                        || application.getStatus() == ApplicationStatus.REVIEWING)
+                .forEach(application -> {
+                    application.setStatus(ApplicationStatus.REJECTED);
+                    if (application.getReviewedAt() == null) {
+                        application.setReviewedAt(rejectionTime);
+                    }
+                    applicationDao.save(application);
+                });
     }
 
     private boolean isFinalStatus(final ApplicationStatus status) {
