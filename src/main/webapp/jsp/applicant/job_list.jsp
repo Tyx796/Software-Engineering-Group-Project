@@ -33,11 +33,16 @@
         <div class="card shadow-sm stat-card"><div class="card-body"><div class="small text-muted">Open jobs</div><div class="display-6 fw-semibold">${jobs.size()}</div></div></div>
     </div>
     <div class="col-md-4">
-        <div class="card shadow-sm stat-card"><div class="card-body"><div class="small text-muted">Profile status</div><div class="h4 mb-0">${empty profile ? 'Not ready' : 'Ready'}</div></div></div>
+        <div class="card shadow-sm stat-card"><div class="card-body"><div class="small text-muted">Active applications</div><div class="h4 mb-0">${activeApplicationCount} / ${effectiveApplicationLimit}</div></div></div>
     </div>
     <div class="col-md-4">
         <div class="card shadow-sm stat-card"><div class="card-body"><div class="small text-muted">CV status</div><div class="h4 mb-0">${hasUploadedCv ? 'Uploaded' : 'Missing'}</div></div></div>
     </div>
+</div>
+<div class="alert ${hasReachedApplicationLimit ? 'alert-warning' : 'alert-info'}">
+    You can keep up to <strong>${effectiveApplicationLimit}</strong> active applications.
+    Current usage: <strong>${activeApplicationCount}</strong>.
+    Contact Admin if you need an adjustment.
 </div>
 <c:if test="${empty profile}">
     <div class="alert alert-warning">Complete your profile before uploading a CV or applying for jobs.</div>
@@ -55,6 +60,13 @@
                     <p class="small flex-grow-1">${job.description}</p>
                     <p class="mb-2"><strong>Hours/week:</strong> ${job.hoursPerWeek}</p>
                     <p class="mb-3"><strong>Deadline:</strong> ${job.deadline}</p>
+                    <p class="mb-2"><strong>Filled slots:</strong> ${acceptedCountsByJobId[job.id]} / ${job.assistantQuota}</p>
+                    <p class="mb-3">
+                        <strong>Remaining:</strong> ${remainingSlotsByJobId[job.id]}
+                        <span class="badge ${fullJobsById[job.id] ? 'text-bg-warning' : 'text-bg-success'} ms-2">
+                            ${fullJobsById[job.id] ? 'Full' : 'Open'}
+                        </span>
+                    </p>
                     <div class="mb-3">
                         <c:forEach items="${job.requirements}" var="requirement">
                             <span class="badge text-bg-light me-1 mb-1">${requirement}</span>

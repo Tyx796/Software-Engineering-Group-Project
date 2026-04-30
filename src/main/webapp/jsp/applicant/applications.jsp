@@ -9,6 +9,10 @@
     </div>
     <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/applicant/jobs">Browse jobs</a>
 </div>
+<div class="alert alert-info">
+    Active application usage: <strong>${activeApplicationCount} / ${effectiveApplicationLimit}</strong>.
+    Contact Admin if you need an adjustment.
+</div>
 <c:choose>
     <c:when test="${empty applications}">
         <div class="alert alert-secondary">You have not submitted any applications yet.</div>
@@ -33,6 +37,14 @@
                         <tr>
                             <td>
                                 <div>${empty job ? application.jobId : job.title}</div>
+                                <c:if test="${not empty job}">
+                                    <div class="small text-muted">
+                                        Slots ${acceptedCountsByJobId[job.id]} / ${job.assistantQuota}
+                                        <span class="badge ${fullJobsById[job.id] ? 'text-bg-warning' : 'text-bg-success'} ms-1">
+                                            ${fullJobsById[job.id] ? 'Full' : 'Open'}
+                                        </span>
+                                    </div>
+                                </c:if>
                                 <div class="small text-muted">${applicationStatusSummaries[statusName]}</div>
                             </td>
                             <td>${empty job ? '-' : job.department}</td>
