@@ -7,6 +7,7 @@ import com.bupt.tarecruit.model.User;
 import com.bupt.tarecruit.service.ApplicantService;
 import com.bupt.tarecruit.service.ApplicationService;
 import com.bupt.tarecruit.service.JobService;
+import com.bupt.tarecruit.service.RecruitmentPolicyService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,6 +24,7 @@ public class OrganiserJobApplicationsServlet extends BaseServlet {
     private final JobService jobService = new JobService();
     private final ApplicationService applicationService = new ApplicationService();
     private final ApplicantService applicantService = new ApplicantService();
+    private final RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -43,6 +45,11 @@ public class OrganiserJobApplicationsServlet extends BaseServlet {
             request.setAttribute("job", job);
             request.setAttribute("applications", applications);
             request.setAttribute("applicantsByUserId", applicantsByUserId);
+            request.setAttribute("acceptedCount", recruitmentPolicyService.countAcceptedApplications(jobId));
+            request.setAttribute("remainingAssistantSlots",
+                    recruitmentPolicyService.remainingAssistantSlots(jobId));
+            request.setAttribute("jobFull", recruitmentPolicyService.isJobFull(jobId));
+            setApplicationStatusView(request);
             forward(request, response, "organiser/job_applications.jsp");
         } catch (IllegalArgumentException exception) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, exception.getMessage());
