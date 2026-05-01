@@ -32,7 +32,19 @@
         </c:if>
         <c:if test="${sessionScope.currentUser.role == 'ADMIN'}">
             <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/admin/home">Admin Home</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/admin/home">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/admin/settings">Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/admin/users">Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/admin/workloads">Workloads</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/admin/jobs">Jobs</a>
             </li>
         </c:if>
     </ul>
