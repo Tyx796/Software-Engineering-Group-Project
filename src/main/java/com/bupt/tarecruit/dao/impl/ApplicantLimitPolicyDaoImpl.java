@@ -42,4 +42,11 @@ public class ApplicantLimitPolicyDaoImpl implements ApplicantLimitPolicyDao {
     public void saveAll(final List<ApplicantLimitPolicy> policies) {
         FileStorageUtil.writeList(policiesFile, policies);
     }
+
+    @Override
+    public void deleteByUserId(final String userId) {
+        List<ApplicantLimitPolicy> policies = new ArrayList<>(findAll());
+        policies.removeIf(existing -> existing.getUserId().equals(userId));
+        saveAll(policies);
+    }
 }

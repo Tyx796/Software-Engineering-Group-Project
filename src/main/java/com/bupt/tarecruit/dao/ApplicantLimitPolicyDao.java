@@ -9,4 +9,5 @@ public interface ApplicantLimitPolicyDao {
     Optional<ApplicantLimitPolicy> findByUserId(String userId);
     void save(ApplicantLimitPolicy policy);
     void saveAll(List<ApplicantLimitPolicy> policies);
+    void deleteByUserId(String userId);
 }
