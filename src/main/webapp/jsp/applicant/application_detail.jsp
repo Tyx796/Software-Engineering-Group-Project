@@ -28,6 +28,7 @@
                         <c:if test="${not empty application.reviewedAt}">
                             <p><strong>First reviewed at:</strong> ${application.reviewedAt}</p>
                         </c:if>
+                        <p><strong>Active applications:</strong> ${activeApplicationCount} / ${effectiveApplicationLimit}</p>
                         <c:if test="${statusName == 'PENDING' || statusName == 'REVIEWING' || statusName == 'ACCEPTED'}">
                             <form method="post" action="${pageContext.request.contextPath}/applicant/applications/withdraw" class="mt-3">
                                 <input type="hidden" name="applicationId" value="${application.id}">
@@ -40,6 +41,14 @@
                             <p>${job.description}</p>
                             <p><strong>Hours/week:</strong> ${job.hoursPerWeek}</p>
                             <p><strong>Deadline:</strong> ${job.deadline}</p>
+                            <p><strong>Filled slots:</strong> ${acceptedCount} / ${job.assistantQuota}</p>
+                            <p><strong>Remaining slots:</strong> ${remainingAssistantSlots}</p>
+                            <p class="mb-0">
+                                <strong>Availability:</strong>
+                                <span class="badge ${jobFull ? 'text-bg-warning' : 'text-bg-success'}">
+                                    ${jobFull ? 'Full' : 'Open'}
+                                </span>
+                            </p>
                         </c:if>
                     </div>
                 </div>

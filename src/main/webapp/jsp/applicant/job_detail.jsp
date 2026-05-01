@@ -18,6 +18,8 @@
                         <hr>
                         <p><strong>Hours/week:</strong> ${job.hoursPerWeek}</p>
                         <p><strong>Deadline:</strong> ${job.deadline}</p>
+                        <p><strong>Filled slots:</strong> ${acceptedCount} / ${job.assistantQuota}</p>
+                        <p><strong>Remaining slots:</strong> ${remainingAssistantSlots}</p>
                         <h2 class="h5 mt-4">Requirements</h2>
                         <ul>
                             <c:forEach items="${job.requirements}" var="requirement">
@@ -34,6 +36,9 @@
                         <ul class="list-unstyled small">
                             <li class="mb-2">Profile: <strong>${empty profile ? 'Missing' : 'Ready'}</strong></li>
                             <li class="mb-2">CV: <strong>${hasUploadedCv ? 'Uploaded' : 'Missing'}</strong></li>
+                            <li class="mb-2">Active applications: <strong>${activeApplicationCount} / ${effectiveApplicationLimit}</strong></li>
+                            <li class="mb-2">Slots: <strong>${acceptedCount} / ${job.assistantQuota}</strong></li>
+                            <li class="mb-2">Remaining slots: <strong>${remainingAssistantSlots}</strong></li>
                             <li class="mb-3">Status:
                                 <strong>
                                     <c:choose>
@@ -61,7 +66,17 @@
                             <c:otherwise>
                                 <form method="post" action="${pageContext.request.contextPath}/applicant/job-detail" class="d-grid gap-2">
                                     <input type="hidden" name="id" value="${job.id}">
-                                    <button class="btn btn-primary" type="submit">Apply now</button>
+                                    <c:if test="${jobFull}">
+                                        <div class="alert alert-warning small mb-0">
+                                            This job is full. No more applications can be accepted right now.
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${hasReachedApplicationLimit}">
+                                        <div class="alert alert-warning small mb-0">
+                                            You have reached your application limit. Contact Admin if you need an adjustment.
+                                        </div>
+                                    </c:if>
+                                    <button class="btn btn-primary" type="submit" ${jobFull || hasReachedApplicationLimit ? 'disabled' : ''}>Apply now</button>
                                     <a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/applicant/profile">Update profile</a>
                                     <a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/applicant/cv">Manage CV</a>
                                 </form>
