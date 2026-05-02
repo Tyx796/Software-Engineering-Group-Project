@@ -3,6 +3,9 @@ package com.bupt.tarecruit.service;
 import com.bupt.tarecruit.dao.impl.ApplicantLimitPolicyDaoImpl;
 import com.bupt.tarecruit.dao.impl.ApplicationDaoImpl;
 import com.bupt.tarecruit.dao.impl.JobDaoImpl;
+import com.bupt.tarecruit.model.AdminDashboardSummary;
+import com.bupt.tarecruit.model.AdminJobSupervisionView;
+import com.bupt.tarecruit.model.ApplicantWorkloadView;
 import com.bupt.tarecruit.model.ApplicantLimitAdminView;
 import com.bupt.tarecruit.model.Application;
 import com.bupt.tarecruit.model.ApplicationStatus;
@@ -95,6 +98,7 @@ class AdminServiceTest {
 
         assertEquals(1, views.size());
         assertEquals(2, views.get(0).getActiveApplicationCount());
+        assertEquals(1, views.get(0).getAcceptedAssignmentCount());
     }
 
     @Test
@@ -132,6 +136,106 @@ class AdminServiceTest {
         assertEquals("Applicant application limit override must be zero or greater.", exception.getMessage());
     }
 
+    @Test
+    void dashboardSummaryAggregatesAdminMetrics() throws Exception {
+        TestContext context = createContext();
+        User applicantOne = context.userService.register("Alice", "alice@example.com", "secret1", Role.APPLICANT);
+        User applicantTwo = context.userService.register("Ben", "ben@example.com", "secret1", Role.APPLICANT);
+        User organiser = context.userService.register("Olivia", "olivia@example.com", "secret1", Role.ORGANISER);
+        context.userService.register("Ada", "ada@example.com", "secret1", Role.ADMIN);
+        context.adminService.updateGlobalDefaultApplicantApplicationLimit(1);
+        context.adminService.saveApplicantApplicationLimitOverride(applicantTwo.getId(), 2);
+
+        Job fullJob = createJob(context, organiser.getId(), 1);
+        fullJob.setHoursPerWeek(22);
+        context.jobDao.save(fullJob);
+        Job openJob = createJob(context, organiser.getId(), 2);
+
+        saveApplication(context, applicantOne.getId(), fullJob.getId(), ApplicationStatus.ACCEPTED);
+        saveApplication(context, applicantOne.getId(), openJob.getId(), ApplicationStatus.REVIEWING);
+        saveApplication(context, applicantTwo.getId(), openJob.getId(), ApplicationStatus.PENDING);
+        saveApplication(context, applicantTwo.getId(), fullJob.getId(), ApplicationStatus.REJECTED);
+
+        AdminDashboardSummary summary = context.adminService.getDashboardSummary();
+
+        assertEquals(4, summary.getTotalUsers());
+        assertEquals(2, summary.getTotalApplicants());
+        assertEquals(1, summary.getTotalOrganisers());
+        assertEquals(2, summary.getTotalJobs());
+        assertEquals(2, summary.getOpenJobs());
+        assertEquals(1, summary.getFullJobs());
+        assertEquals(4, summary.getTotalApplications());
+        assertEquals(2, summary.getPendingOrReviewingApplications());
+        assertEquals(1, summary.getAcceptedApplications());
+        assertEquals(1, summary.getApplicantsAtLimit());
+        assertEquals(1, summary.getOverloadedApplicants());
+    }
+
+    @Test
+    void workloadViewsIncludeAcceptedAssignmentsAndOverloadFlag() throws Exception {
+        TestContext context = createContext();
+        User applicant = context.userService.register("Alice", "alice@example.com", "secret1", Role.APPLICANT);
+        User organiser = context.userService.register("Olivia", "olivia@example.com", "secret1", Role.ORGANISER);
+        context.applicantService.createProfile(
+                applicant.getId(),
+                "Alice Zhang",
+                "13800138000",
+                "20240001",
+                "Computer Science",
+                "Interested in teaching.");
+
+        Job jobOne = createJob(context, organiser.getId(), 2);
+        jobOne.setTitle("Algorithms TA");
+        jobOne.setDepartment("CS");
+        jobOne.setHoursPerWeek(12);
+        context.jobDao.save(jobOne);
+        Job jobTwo = createJob(context, organiser.getId(), 1);
+        jobTwo.setTitle("Database TA");
+        jobTwo.setDepartment("CS");
+        jobTwo.setHoursPerWeek(10);
+        context.jobDao.save(jobTwo);
+        saveApplication(context, applicant.getId(), jobOne.getId(), ApplicationStatus.ACCEPTED);
+        saveApplication(context, applicant.getId(), jobTwo.getId(), ApplicationStatus.ACCEPTED);
+
+        List<ApplicantWorkloadView> views = context.adminService.getApplicantWorkloadViews(20);
+
+        assertEquals(1, views.size());
+        ApplicantWorkloadView view = views.get(0);
+        assertEquals("Alice Zhang", view.getProfile().getFullName());
+        assertEquals(2, view.getAcceptedAssignments().size());
+        assertEquals(22, view.getTotalHoursPerWeek());
+        assertTrue(view.isOverloaded());
+    }
+
+    @Test
+    void jobSupervisionViewsExposeQuotaUsageAndUnexpectedPendingState() throws Exception {
+        TestContext context = createContext();
+        User applicantOne = context.userService.register("Alice", "alice@example.com", "secret1", Role.APPLICANT);
+        User applicantTwo = context.userService.register("Ben", "ben@example.com", "secret1", Role.APPLICANT);
+        User organiser = context.userService.register("Olivia", "olivia@example.com", "secret1", Role.ORGANISER);
+
+        Job fullJob = createJob(context, organiser.getId(), 1);
+        fullJob.setTitle("Programming TA");
+        context.jobDao.save(fullJob);
+        saveApplication(context, applicantOne.getId(), fullJob.getId(), ApplicationStatus.ACCEPTED);
+        saveApplication(context, applicantTwo.getId(), fullJob.getId(), ApplicationStatus.PENDING);
+        saveApplication(context, applicantTwo.getId(), fullJob.getId(), ApplicationStatus.REJECTED);
+
+        List<AdminJobSupervisionView> views = context.adminService.getJobSupervisionViews();
+
+        assertEquals(1, views.size());
+        AdminJobSupervisionView view = views.get(0);
+        assertEquals("Programming TA", view.getJob().getTitle());
+        assertEquals("Olivia", view.getOrganiser().getUsername());
+        assertEquals(1, view.getAcceptedCount());
+        assertEquals(0, view.getRemainingSlots());
+        assertTrue(view.isFull());
+        assertEquals(1, view.getPendingCount());
+        assertEquals(1, view.getRejectedCount());
+        assertTrue(view.hasUnexpectedPendingOrReviewingWhenFull());
+        assertFalse(view.isAcceptedOverQuota());
+    }
+
     private TestContext createContext() throws Exception {
         Path usersFile = Files.createTempFile("users", ".json");
         Path applicantsFile = Files.createTempFile("applicants", ".json");
@@ -146,6 +250,7 @@ class AdminServiceTest {
         ApplicationDaoImpl applicationDao = new ApplicationDaoImpl(applicationsFile);
         JobDaoImpl jobDao = new JobDaoImpl(jobsFile);
         ApplicantLimitPolicyDaoImpl policyDao = new ApplicantLimitPolicyDaoImpl(policiesFile);
+        JobService jobService = new JobService(jobDao, applicationDao, new MessageService());
         RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService(
                 applicationDao,
                 jobDao,
@@ -156,9 +261,11 @@ class AdminServiceTest {
                 applicantService,
                 settingsService,
                 policyDao,
+                jobService,
+                applicationDao,
                 recruitmentPolicyService);
 
-        return new TestContext(userService, adminService, applicationDao, jobDao);
+        return new TestContext(userService, applicantService, adminService, applicationDao, jobDao);
     }
 
     private Job createJob(final TestContext context, final String organiserUserId, final int assistantQuota) {
@@ -183,6 +290,7 @@ class AdminServiceTest {
 
     private record TestContext(
             UserService userService,
+            ApplicantService applicantService,
             AdminService adminService,
             ApplicationDaoImpl applicationDao,
             JobDaoImpl jobDao) {

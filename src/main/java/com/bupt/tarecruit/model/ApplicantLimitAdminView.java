@@ -6,6 +6,7 @@ public class ApplicantLimitAdminView {
     private Integer applicationLimitOverride;
     private int effectiveApplicationLimit;
     private int activeApplicationCount;
+    private int acceptedAssignmentCount;
 
     public User getUser() { return user; }
     public void setUser(final User user) { this.user = user; }
@@ -22,6 +23,10 @@ public class ApplicantLimitAdminView {
     public int getActiveApplicationCount() { return activeApplicationCount; }
     public void setActiveApplicationCount(final int activeApplicationCount) {
         this.activeApplicationCount = activeApplicationCount;
+    }
+    public int getAcceptedAssignmentCount() { return acceptedAssignmentCount; }
+    public void setAcceptedAssignmentCount(final int acceptedAssignmentCount) {
+        this.acceptedAssignmentCount = acceptedAssignmentCount;
     }
 
     public boolean isUsingOverride() {
