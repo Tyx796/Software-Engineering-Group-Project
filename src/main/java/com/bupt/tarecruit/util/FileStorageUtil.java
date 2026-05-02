@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.function.Supplier;
 
 public final class FileStorageUtil {
     private FileStorageUtil() {
@@ -17,6 +18,14 @@ public final class FileStorageUtil {
 
     public static void writeList(final Path path, final List<?> items) {
         JsonStorage.writeList(path, items);
+    }
+
+    public static <T> T readObject(final Path path, final Class<T> type, final Supplier<T> defaultSupplier) {
+        return JsonStorage.readObject(path, type, defaultSupplier);
+    }
+
+    public static void writeObject(final Path path, final Object item) {
+        JsonStorage.writeObject(path, item);
     }
 
     public static Path dataDirectory() {

@@ -1,6 +1,7 @@
 package com.bupt.tarecruit.servlet;
 
 import com.bupt.tarecruit.model.Role;
+import com.bupt.tarecruit.service.SettingsService;
 import com.bupt.tarecruit.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import java.io.IOException;
 @WebServlet("/register")
 public class RegisterServlet extends BaseServlet {
     private final UserService userService = new UserService();
+    private final SettingsService settingsService = new SettingsService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -27,12 +29,21 @@ public class RegisterServlet extends BaseServlet {
             if (confirmPassword == null || !confirmPassword.equals(password)) {
                 throw new IllegalArgumentException("Passwords do not match.");
             }
+            Role role = Role.fromString(request.getParameter("role"));
             userService.register(
                     request.getParameter("username"),
                     request.getParameter("email"),
                     password,
-                    Role.fromString(request.getParameter("role")));
-            request.getSession().setAttribute("flash", "Registration successful. Please sign in.");
+                    role);
+            if (role == Role.APPLICANT) {
+                request.getSession().setAttribute(
+                        "flash",
+                        "Registration successful. Please sign in. Applicant accounts can keep up to "
+                                + settingsService.getDefaultApplicantApplicationLimit()
+                                + " active applications. Contact Admin if you need an adjustment.");
+            } else {
+                request.getSession().setAttribute("flash", "Registration successful. Please sign in.");
+            }
             redirect(request, response, "/login");
         } catch (IllegalArgumentException exception) {
             setError(request, exception.getMessage());

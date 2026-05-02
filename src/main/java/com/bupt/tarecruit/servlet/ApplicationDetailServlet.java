@@ -3,6 +3,7 @@ package com.bupt.tarecruit.servlet;
 import com.bupt.tarecruit.model.Application;
 import com.bupt.tarecruit.service.ApplicationService;
 import com.bupt.tarecruit.service.JobService;
+import com.bupt.tarecruit.service.RecruitmentPolicyService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import java.io.IOException;
 public class ApplicationDetailServlet extends BaseServlet {
     private final ApplicationService applicationService = new ApplicationService();
     private final JobService jobService = new JobService();
+    private final RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -35,7 +37,18 @@ public class ApplicationDetailServlet extends BaseServlet {
         }
 
         request.setAttribute("application", application);
-        request.setAttribute("job", jobService.findById(application.getJobId()).orElse(null));
+        var job = jobService.findById(application.getJobId()).orElse(null);
+        request.setAttribute("job", job);
+        request.setAttribute("activeApplicationCount",
+                recruitmentPolicyService.countActiveApplications(application.getApplicantUserId()));
+        request.setAttribute("effectiveApplicationLimit",
+                recruitmentPolicyService.resolveApplicantApplicationLimit(application.getApplicantUserId()));
+        if (job != null) {
+            request.setAttribute("acceptedCount", recruitmentPolicyService.countAcceptedApplications(job.getId()));
+            request.setAttribute("remainingAssistantSlots",
+                    recruitmentPolicyService.remainingAssistantSlots(job.getId()));
+            request.setAttribute("jobFull", recruitmentPolicyService.isJobFull(job.getId()));
+        }
         setApplicationStatusView(request);
         forward(request, response, "applicant/application_detail.jsp");
     }
