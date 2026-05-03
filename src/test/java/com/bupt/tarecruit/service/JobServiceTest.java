@@ -203,12 +203,52 @@ class JobServiceTest {
                 "Support testing labs and revision sessions.",
                 "JUnit\nMocking\nFeedback",
                 10,
+                3,
                 LocalDate.now().plusDays(10));
 
         assertEquals("Advanced Software Testing TA", updated.getTitle());
         assertEquals(10, updated.getHoursPerWeek());
+        assertEquals(3, updated.getAssistantQuota());
         assertEquals(3, updated.getRequirements().size());
         assertEquals("Advanced Software Testing TA", service.findById(job.getId()).orElseThrow().getTitle());
+    }
+
+    @Test
+    void organiserCanCreateJobWithCustomAssistantQuota() throws Exception {
+        Path file = Files.createTempFile("jobs", ".json");
+        JobService service = new JobService(file);
+
+        Job job = service.createJob(
+                "organiser-1",
+                "Software Engineering TA",
+                "Computer Science",
+                "Support software engineering labs.",
+                "Java\nGit",
+                8,
+                4,
+                LocalDate.now().plusDays(7));
+
+        assertEquals(4, job.getAssistantQuota());
+        assertEquals(4, service.findById(job.getId()).orElseThrow().getAssistantQuota());
+    }
+
+    @Test
+    void assistantQuotaMustBeGreaterThanZero() throws Exception {
+        Path file = Files.createTempFile("jobs", ".json");
+        JobService service = new JobService(file);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.createJob(
+                        "organiser-1",
+                        "Software Engineering TA",
+                        "Computer Science",
+                        "Support software engineering labs.",
+                        "Java\nGit",
+                        8,
+                        0,
+                        LocalDate.now().plusDays(7)));
+        assertEquals("Assistant quota must be greater than zero.", exception.getMessage());
     }
 
     @Test
