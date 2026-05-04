@@ -29,11 +29,16 @@
                         <div class="form-text">Use commas or new lines to separate skills and requirements.</div>
                     </div>
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label">Hours per week</label>
                             <input class="form-control" type="number" name="hoursPerWeek" min="1" required value="${formHoursPerWeek}">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="form-label">Assistant quota</label>
+                            <input class="form-control" type="number" name="assistantQuota" min="1" required value="${formAssistantQuota}">
+                            <div class="form-text">How many TAs this job can recruit.</div>
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label">Deadline</label>
                             <input class="form-control" type="date" name="deadline" min="${today}" required value="${formDeadline}">
                         </div>
