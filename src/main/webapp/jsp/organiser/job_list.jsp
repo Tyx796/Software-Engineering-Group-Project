@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Organiser Jobs"/>
+<c:set var="pageAutoRefreshSeconds" value="30"/>
+<c:set var="pageAutoRefreshLabel" value="Organiser job recruitment progress"/>
 <%@ include file="../common/header.jsp" %>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -17,6 +19,7 @@
                 <tr>
                     <th>Title</th>
                     <th>Department</th>
+                    <th>Slots</th>
                     <th>Hours/week</th>
                     <th>Deadline</th>
                     <th>Status</th>
@@ -28,12 +31,21 @@
                     <tr>
                         <td>${job.title}</td>
                         <td>${job.department}</td>
+                        <td>
+                            <div>${acceptedCountsByJobId[job.id]} / ${job.assistantQuota}</div>
+                            <div class="small text-muted">Remaining ${remainingSlotsByJobId[job.id]}</div>
+                        </td>
                         <td>${job.hoursPerWeek}</td>
                         <td>${job.deadline}</td>
                         <td>
-                            <span class="badge ${job.status == 'CANCELLED' ? 'text-bg-secondary' : 'text-bg-success'}">
-                                ${job.status}
+                            <span class="badge ${job.status == 'CANCELLED' ? 'text-bg-secondary' : (fullJobsById[job.id] ? 'text-bg-warning' : 'text-bg-success')}">
+                                    ${job.status}
                             </span>
+                            <c:if test="${job.status != 'CANCELLED'}">
+                                <span class="badge ${fullJobsById[job.id] ? 'text-bg-warning' : 'text-bg-success'} ms-1">
+                                        ${fullJobsById[job.id] ? 'Full' : 'Open'}
+                                </span>
+                            </c:if>
                         </td>
                         <td class="text-end">
                             <c:if test="${job.status != 'CANCELLED'}">

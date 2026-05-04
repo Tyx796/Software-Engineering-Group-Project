@@ -40,7 +40,11 @@ public class AdminJobSupervisionView {
         return job != null && acceptedCount > job.getAssistantQuota();
     }
 
-    public boolean hasUnexpectedPendingOrReviewingWhenFull() {
+    public boolean isUnexpectedPendingOrReviewingWhenFull() {
         return full && (pendingCount > 0 || reviewingCount > 0);
+    }
+
+    public boolean hasUnexpectedPendingOrReviewingWhenFull() {
+        return isUnexpectedPendingOrReviewingWhenFull();
     }
 }
