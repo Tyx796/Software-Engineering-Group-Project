@@ -15,22 +15,27 @@
                             <option value="ORGANISER" ${formRole == 'ORGANISER' ? 'selected' : ''}>Organiser</option>
                             <option value="ADMIN" ${formRole == 'ADMIN' ? 'selected' : ''}>Admin</option>
                         </select>
+                        <div class="invalid-feedback">Please choose a role.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="username">Username</label>
                         <input class="form-control" type="text" id="username" name="username" required value="${formUsername}">
+                        <div class="invalid-feedback">Please enter a username.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="email">Email</label>
                         <input class="form-control" type="email" id="email" name="email" required value="${formEmail}">
+                        <div class="invalid-feedback">Please enter a valid email address.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="password">Password</label>
                         <input class="form-control" type="password" id="password" name="password" minlength="6" required>
+                        <div class="invalid-feedback">Password must be at least 6 characters.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="confirmPassword">Confirm password</label>
                         <input class="form-control" type="password" id="confirmPassword" name="confirmPassword" minlength="6" required>
+                        <div class="invalid-feedback">Please confirm your password.</div>
                     </div>
                     <button class="btn btn-primary w-100" type="submit">Register</button>
                 </form>
