@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Available Jobs"/>
+<c:set var="pageAutoRefreshSeconds" value="30"/>
+<c:set var="pageAutoRefreshLabel" value="Applicant job availability"/>
 <%@ include file="../common/header.jsp" %>
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
