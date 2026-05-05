@@ -28,7 +28,10 @@
                     </c:otherwise>
                 </c:choose>
                 <form method="post" action="${pageContext.request.contextPath}/applicant/cv" enctype="multipart/form-data" class="needs-validation" novalidate>
-                    <input class="form-control mb-3" type="file" name="cv" accept=".pdf,.doc,.docx" required>
+                    <div class="mb-3">
+                        <input class="form-control" type="file" name="cv" accept=".pdf,.doc,.docx" required>
+                        <div class="invalid-feedback">Please choose a CV file in PDF, DOC, or DOCX format.</div>
+                    </div>
                     <button class="btn btn-primary" type="submit">${hasUploadedCv ? 'Replace CV' : 'Upload CV'}</button>
                     <a class="btn btn-outline-secondary ms-2" href="${pageContext.request.contextPath}/applicant/profile">Back to profile</a>
                 </form>

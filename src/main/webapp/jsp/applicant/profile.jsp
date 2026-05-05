@@ -21,18 +21,22 @@
                         <div class="col-md-6">
                             <label class="form-label">Full name</label>
                             <input class="form-control" type="text" name="fullName" required value="${profile.fullName}">
+                            <div class="invalid-feedback">Please enter your full name.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Phone</label>
                             <input class="form-control" type="tel" name="phone" required value="${profile.phone}" pattern="[+0-9()\-\s]{6,20}">
+                            <div class="invalid-feedback">Please enter a valid phone number.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Student ID</label>
                             <input class="form-control" type="text" name="studentId" required value="${profile.studentId}">
+                            <div class="invalid-feedback">Please enter your student ID.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Programme</label>
                             <input class="form-control" type="text" name="programme" required value="${profile.programme}">
+                            <div class="invalid-feedback">Please enter your programme.</div>
                         </div>
                         <div class="col-12">
                             <label class="form-label">Bio</label>
