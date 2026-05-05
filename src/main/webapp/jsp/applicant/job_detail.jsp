@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Job Detail"/>
+<c:set var="pageAutoRefreshSeconds" value="30"/>
+<c:set var="pageAutoRefreshLabel" value="Job detail quota status"/>
 <%@ include file="../common/header.jsp" %>
 <c:choose>
     <c:when test="${empty job}">
