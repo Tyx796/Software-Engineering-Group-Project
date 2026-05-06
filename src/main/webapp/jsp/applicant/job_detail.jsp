@@ -54,6 +54,43 @@
                                 </strong>
                             </li>
                         </ul>
+                        <div class="border rounded p-3 mb-3 small">
+                            <h3 class="h6 mb-2">Skill match</h3>
+                            <c:choose>
+                                <c:when test="${empty profile}">
+                                    <div class="text-muted">Complete your profile to see skill match insights before applying.</div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="mb-2">
+                                        <strong>Matched skills:</strong>
+                                        <c:choose>
+                                            <c:when test="${empty skillMatch.matchedSkills}">
+                                                <span class="text-muted">None yet</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach items="${skillMatch.matchedSkills}" var="matchedSkill">
+                                                    <span class="badge text-bg-success me-1 mb-1">${matchedSkill}</span>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Missing skills:</strong>
+                                        <c:choose>
+                                            <c:when test="${empty skillMatch.missingSkills}">
+                                                <span class="text-muted">No missing required skills.</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach items="${skillMatch.missingSkills}" var="missingSkill">
+                                                    <span class="badge text-bg-warning me-1 mb-1">${missingSkill}</span>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div class="text-muted">You can still apply even if some required skills are missing.</div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
                         <c:choose>
                             <c:when test="${not empty existingApplication}">
                                 <div class="alert alert-light border small">

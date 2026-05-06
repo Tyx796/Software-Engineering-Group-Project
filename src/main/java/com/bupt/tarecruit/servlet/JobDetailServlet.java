@@ -5,6 +5,7 @@ import com.bupt.tarecruit.service.ApplicationService;
 import com.bupt.tarecruit.service.CvService;
 import com.bupt.tarecruit.service.JobService;
 import com.bupt.tarecruit.service.RecruitmentPolicyService;
+import com.bupt.tarecruit.service.SkillMatchService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,6 +20,7 @@ public class JobDetailServlet extends BaseServlet {
     private final ApplicationService applicationService = new ApplicationService();
     private final CvService cvService = new CvService();
     private final RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService();
+    private final SkillMatchService skillMatchService = new SkillMatchService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -35,7 +37,9 @@ public class JobDetailServlet extends BaseServlet {
         }
         request.setAttribute("job", job);
         String currentUserId = SessionUtil.currentUser(request).getId();
-        request.setAttribute("profile", applicantService.findByUserId(currentUserId).orElse(null));
+        var profile = applicantService.findByUserId(currentUserId).orElse(null);
+        request.setAttribute("profile", profile);
+        request.setAttribute("skillMatch", skillMatchService.calculateMatch(profile, job));
         request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(currentUserId));
         request.setAttribute("existingApplication",
                 applicationService.findByApplicantAndJob(currentUserId, jobId).orElse(null));
