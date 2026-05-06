@@ -3,11 +3,13 @@ package com.bupt.tarecruit.servlet;
 import com.bupt.tarecruit.model.Applicant;
 import com.bupt.tarecruit.model.Application;
 import com.bupt.tarecruit.model.Job;
+import com.bupt.tarecruit.model.SkillMatchView;
 import com.bupt.tarecruit.model.User;
 import com.bupt.tarecruit.service.ApplicantService;
 import com.bupt.tarecruit.service.ApplicationService;
 import com.bupt.tarecruit.service.JobService;
 import com.bupt.tarecruit.service.RecruitmentPolicyService;
+import com.bupt.tarecruit.service.SkillMatchService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,6 +27,7 @@ public class OrganiserJobApplicationsServlet extends BaseServlet {
     private final ApplicationService applicationService = new ApplicationService();
     private final ApplicantService applicantService = new ApplicantService();
     private final RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService();
+    private final SkillMatchService skillMatchService = new SkillMatchService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -41,10 +44,18 @@ public class OrganiserJobApplicationsServlet extends BaseServlet {
             List<Application> applications = applicationService.getApplicationsForOrganiserJob(organiser.getId(), jobId);
             Map<String, Applicant> applicantsByUserId = applicantService.getAllProfiles().stream()
                     .collect(Collectors.toMap(Applicant::getUserId, Function.identity(), (left, right) -> right));
+            Map<String, SkillMatchView> skillMatchesByApplicationId = applications.stream()
+                    .collect(Collectors.toMap(
+                            Application::getId,
+                            application -> skillMatchService.calculateMatch(
+                                    applicantsByUserId.get(application.getApplicantUserId()),
+                                    job),
+                            (left, right) -> left));
 
             request.setAttribute("job", job);
             request.setAttribute("applications", applications);
             request.setAttribute("applicantsByUserId", applicantsByUserId);
+            request.setAttribute("skillMatchesByApplicationId", skillMatchesByApplicationId);
             request.setAttribute("acceptedCount", recruitmentPolicyService.countAcceptedApplications(jobId));
             request.setAttribute("remainingAssistantSlots",
                     recruitmentPolicyService.remainingAssistantSlots(jobId));
