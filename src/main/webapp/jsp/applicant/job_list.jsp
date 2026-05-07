@@ -30,6 +30,40 @@
         </form>
     </div>
 </div>
+<c:if test="${not empty recommendedJobs}">
+    <div class="card shadow-sm mb-4 border-primary-subtle">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h2 class="h5 mb-1">Recommended for you</h2>
+                    <p class="text-muted small mb-0">Based on your current profile skills and open TA jobs.</p>
+                </div>
+            </div>
+            <div class="row g-3">
+                <c:forEach items="${recommendedJobs}" var="recommendation">
+                    <div class="col-lg-4">
+                        <div class="border rounded h-100 p-3">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <div class="fw-semibold">${recommendation.job.title}</div>
+                                    <div class="small text-muted">${recommendation.job.department}</div>
+                                </div>
+                                <span class="badge ${recommendation.matchScore >= 75 ? 'text-bg-success' : recommendation.matchScore >= 40 ? 'text-bg-warning' : 'text-bg-secondary'}">
+                                    ${recommendation.matchScore}% match
+                                </span>
+                            </div>
+                            <div class="small text-muted mb-3">Deadline ${recommendation.job.deadline}</div>
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="${pageContext.request.contextPath}/applicant/job-detail?id=${recommendation.job.id}">
+                                View recommendation
+                            </a>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
+    </div>
+</c:if>
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="card shadow-sm stat-card"><div class="card-body"><div class="small text-muted">Open jobs</div><div class="display-6 fw-semibold">${jobs.size()}</div></div></div>
