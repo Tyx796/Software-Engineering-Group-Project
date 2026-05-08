@@ -26,4 +26,15 @@ public class ApplicantWorkloadView {
     public boolean isOverloaded() {
         return totalHoursPerWeek > workloadThreshold;
     }
+
+    public String getWorkloadStatusLabel() {
+        return isOverloaded() ? "Overloaded" : "Within threshold";
+    }
+
+    public String getWorkloadAlertMessage() {
+        if (isOverloaded()) {
+            return totalHoursPerWeek + " hours/week exceeds the " + workloadThreshold + "-hour threshold.";
+        }
+        return totalHoursPerWeek + " hours/week is within the " + workloadThreshold + "-hour threshold.";
+    }
 }
