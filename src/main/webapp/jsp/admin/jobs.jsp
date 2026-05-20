@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Admin Job Supervision"/>
+<c:set var="pageSection" value="admin-jobs"/>
 <c:set var="pageAutoRefreshSeconds" value="30"/>
 <c:set var="pageAutoRefreshLabel" value="Admin job supervision"/>
 <%@ include file="../common/header.jsp" %>

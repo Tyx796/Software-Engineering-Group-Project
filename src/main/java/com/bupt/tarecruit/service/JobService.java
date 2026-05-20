@@ -45,7 +45,7 @@ public class JobService {
     }
 
     public Job createJob(final String organiserUserId, final String title, final String department,
-                         final String description, final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
+            final String description, final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
         return createJob(
                 organiserUserId,
                 title,
@@ -58,8 +58,8 @@ public class JobService {
     }
 
     public Job createJob(final String organiserUserId, final String title, final String department,
-                         final String description, final String requirementsText, final int hoursPerWeek,
-                         final int assistantQuota, final LocalDate deadline) {
+            final String description, final String requirementsText, final int hoursPerWeek,
+            final int assistantQuota, final LocalDate deadline) {
         validateJobData(title, department, description, requirementsText, hoursPerWeek, assistantQuota, deadline);
         Job job = Job.create(organiserUserId);
         applyJobData(job, title, department, description, requirementsText, hoursPerWeek, assistantQuota, deadline);
@@ -68,8 +68,8 @@ public class JobService {
     }
 
     public Job updateJobForOrganiser(final String organiserUserId, final String jobId, final String title,
-                                     final String department, final String description, final String requirementsText,
-                                     final int hoursPerWeek, final LocalDate deadline) {
+            final String department, final String description, final String requirementsText,
+            final int hoursPerWeek, final LocalDate deadline) {
         return updateJobForOrganiser(
                 organiserUserId,
                 jobId,
@@ -83,8 +83,8 @@ public class JobService {
     }
 
     public Job updateJobForOrganiser(final String organiserUserId, final String jobId, final String title,
-                                     final String department, final String description, final String requirementsText,
-                                     final int hoursPerWeek, final int assistantQuota, final LocalDate deadline) {
+            final String department, final String description, final String requirementsText,
+            final int hoursPerWeek, final int assistantQuota, final LocalDate deadline) {
         Job job = getOwnedJobForOrganiser(organiserUserId, jobId);
         if (STATUS_CANCELLED.equals(job.getStatus())) {
             throw new IllegalArgumentException("Cancelled jobs cannot be edited.");
@@ -184,13 +184,13 @@ public class JobService {
     }
 
     public void validateJobData(final String title, final String department, final String description,
-                                final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
+            final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
         validateJobData(title, department, description, requirementsText, hoursPerWeek, 1, deadline);
     }
 
     public void validateJobData(final String title, final String department, final String description,
-                                final String requirementsText, final int hoursPerWeek, final int assistantQuota,
-                                final LocalDate deadline) {
+            final String requirementsText, final int hoursPerWeek, final int assistantQuota,
+            final LocalDate deadline) {
         DataValidator.validateRequired(title, "Job title");
         DataValidator.validateRequired(department, "Department");
         DataValidator.validateRequired(description, "Job description");
@@ -208,13 +208,13 @@ public class JobService {
     }
 
     private void applyJobData(final Job job, final String title, final String department, final String description,
-                              final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
+            final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
         applyJobData(job, title, department, description, requirementsText, hoursPerWeek, 1, deadline);
     }
 
     private void applyJobData(final Job job, final String title, final String department, final String description,
-                              final String requirementsText, final int hoursPerWeek, final int assistantQuota,
-                              final LocalDate deadline) {
+            final String requirementsText, final int hoursPerWeek, final int assistantQuota,
+            final LocalDate deadline) {
         job.setTitle(title.trim());
         job.setDepartment(department.trim());
         job.setDescription(description.trim());
@@ -235,7 +235,7 @@ public class JobService {
         return containsIgnoreCase(job.getTitle(), normalizedKeyword)
                 || containsIgnoreCase(job.getDepartment(), normalizedKeyword)
                 || job.getRequirements().stream()
-                .anyMatch(requirement -> containsIgnoreCase(requirement, normalizedKeyword));
+                        .anyMatch(requirement -> containsIgnoreCase(requirement, normalizedKeyword));
     }
 
     private boolean containsIgnoreCase(final String value, final String normalizedKeyword) {

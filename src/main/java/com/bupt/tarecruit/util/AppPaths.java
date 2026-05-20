@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 public final class AppPaths {
     private static final String DATA_DIR_PROPERTY = "tarecruit.data.dir";
     private static final String DATA_DIR_ENV = "TARECRUIT_DATA_DIR";
+    private static final String CATALINA_BASE_PROPERTY = "catalina.base";
 
     private AppPaths() {
     }
@@ -16,6 +17,7 @@ public final class AppPaths {
         Path path = resolveDataDirectory(
                 System.getProperty(DATA_DIR_PROPERTY),
                 System.getenv(DATA_DIR_ENV),
+                System.getProperty(CATALINA_BASE_PROPERTY),
                 workingDirectory);
         ensureDirectory(path);
         return path;
@@ -38,12 +40,17 @@ public final class AppPaths {
     static Path resolveDataDirectory(
             final String systemPropertyValue,
             final String environmentValue,
+            final String catalinaBaseValue,
             final Path workingDirectory) {
         String configured = firstNonBlank(systemPropertyValue, environmentValue);
         if (configured != null) {
             return Paths.get(configured).toAbsolutePath().normalize();
         }
-        return resolveProjectDataDirectory(workingDirectory);
+        try {
+            return resolveProjectDataDirectory(workingDirectory);
+        } catch (IllegalStateException ignored) {
+            return resolveCatalinaDataDirectory(catalinaBaseValue);
+        }
     }
 
     static Path resolveProjectDataDirectory(final Path workingDirectory) {
@@ -53,6 +60,16 @@ public final class AppPaths {
                 return current.resolve("data").toAbsolutePath().normalize();
             }
             current = current.getParent();
+        }
+        throw new IllegalStateException(
+                "Unable to resolve the application data directory. Set "
+                        + DATA_DIR_PROPERTY + " or " + DATA_DIR_ENV
+                        + ", or start the application from the project directory.");
+    }
+
+    static Path resolveCatalinaDataDirectory(final String catalinaBaseValue) {
+        if (catalinaBaseValue != null && !catalinaBaseValue.isBlank()) {
+            return Paths.get(catalinaBaseValue).resolve("data").toAbsolutePath().normalize();
         }
         throw new IllegalStateException(
                 "Unable to resolve the application data directory. Set "

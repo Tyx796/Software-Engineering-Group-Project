@@ -35,18 +35,18 @@ public class ApplicationService {
     }
 
     public ApplicationService(final ApplicantService applicantService, final JobService jobService,
-                              final CvService cvService, final ApplicationDao applicationDao) {
+            final CvService cvService, final ApplicationDao applicationDao) {
         this(applicantService, jobService, cvService, applicationDao, new MessageService(), new RecruitmentPolicyService());
     }
 
     public ApplicationService(final ApplicantService applicantService, final JobService jobService,
-                              final CvService cvService, final ApplicationDao applicationDao, final MessageService messageService) {
+            final CvService cvService, final ApplicationDao applicationDao, final MessageService messageService) {
         this(applicantService, jobService, cvService, applicationDao, messageService, new RecruitmentPolicyService());
     }
 
     public ApplicationService(final ApplicantService applicantService, final JobService jobService,
-                              final CvService cvService, final ApplicationDao applicationDao, final MessageService messageService,
-                              final RecruitmentPolicyService recruitmentPolicyService) {
+            final CvService cvService, final ApplicationDao applicationDao, final MessageService messageService,
+            final RecruitmentPolicyService recruitmentPolicyService) {
         this.applicantService = applicantService;
         this.jobService = jobService;
         this.cvService = cvService;
@@ -140,7 +140,7 @@ public class ApplicationService {
     }
 
     public Application updateStatusForOrganiser(final String organiserUserId, final String applicationId,
-                                                final ApplicationStatus status) {
+            final ApplicationStatus status) {
         DataValidator.validateRequired(organiserUserId, "Organiser user ID");
         DataValidator.validateRequired(applicationId, "Application ID");
         if (status == null) {

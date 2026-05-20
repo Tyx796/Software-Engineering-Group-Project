@@ -635,12 +635,13 @@ class ApplicationServiceTest {
         Path messagesFile = Files.createTempFile("messages", ".json");
         Path settingsFile = Files.createTempFile("settings", ".json");
         Path policiesFile = Files.createTempFile("applicant-limit-policies", ".json");
+        Path cvRootDirectory = Files.createTempDirectory("cv-root");
 
         ApplicantService applicantService = new ApplicantService(applicantsFile);
         ApplicationDaoImpl applicationDao = new ApplicationDaoImpl(applicationsFile);
         JobDaoImpl jobDao = new JobDaoImpl(jobsFile);
         JobService jobService = new JobService(jobDao);
-        CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile));
+        CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile), cvRootDirectory);
         MessageService messageService = new MessageService(messagesFile);
         SettingsService settingsService = new SettingsService(settingsFile);
         RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService(
@@ -707,9 +708,9 @@ class ApplicationServiceTest {
         private final Path applicationsFile;
 
         private TestContext(final ApplicantService applicantService, final JobService jobService,
-                            final CvService cvService, final ApplicationService applicationService, final MessageService messageService,
-                            final ApplicationDaoImpl applicationDao, final SettingsService settingsService,
-                            final Path applicantsFile, final Path cvsFile, final Path applicationsFile) {
+                final CvService cvService, final ApplicationService applicationService, final MessageService messageService,
+                final ApplicationDaoImpl applicationDao, final SettingsService settingsService,
+                final Path applicantsFile, final Path cvsFile, final Path applicationsFile) {
             this.applicantService = applicantService;
             this.jobService = jobService;
             this.cvService = cvService;

@@ -26,13 +26,13 @@ public class ApplicantService {
     }
 
     public Applicant createProfile(final String userId, final String fullName, final String phone,
-                                   final String studentId, final String programme, final String bio) {
+            final String studentId, final String programme, final String bio) {
         return createProfile(userId, fullName, phone, studentId, programme, bio, List.of(), List.of());
     }
 
     public Applicant createProfile(final String userId, final String fullName, final String phone,
-                                   final String studentId, final String programme, final String bio,
-                                   final String skillsText, final String preferredWorkingDaysText) {
+            final String studentId, final String programme, final String bio,
+            final String skillsText, final String preferredWorkingDaysText) {
         return createProfile(
                 userId,
                 fullName,
@@ -45,8 +45,8 @@ public class ApplicantService {
     }
 
     public Applicant createProfile(final String userId, final String fullName, final String phone,
-                                   final String studentId, final String programme, final String bio,
-                                   final List<String> skills, final List<String> preferredWorkingDays) {
+            final String studentId, final String programme, final String bio,
+            final List<String> skills, final List<String> preferredWorkingDays) {
         validateProfile(userId, fullName, phone, studentId, programme);
         List<Applicant> profiles = getAllProfiles();
         Applicant profile = profiles.stream()
@@ -72,7 +72,7 @@ public class ApplicantService {
     /** @deprecated Use {@link #createProfile} instead. */
     @Deprecated
     public Applicant createOrUpdateProfile(final String userId, final String fullName, final String phone,
-                                           final String studentId, final String programme, final String bio) {
+            final String studentId, final String programme, final String bio) {
         return createProfile(userId, fullName, phone, studentId, programme, bio);
     }
 
@@ -113,7 +113,7 @@ public class ApplicantService {
     }
 
     public void validateProfile(final String userId, final String fullName, final String phone,
-                                final String studentId, final String programme) {
+            final String studentId, final String programme) {
         DataValidator.validateRequired(userId, "User ID");
         DataValidator.validateRequired(fullName, "Full name");
         DataValidator.validatePhone(phone);

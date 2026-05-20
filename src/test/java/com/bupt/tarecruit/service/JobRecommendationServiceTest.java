@@ -117,6 +117,7 @@ class JobRecommendationServiceTest {
         Path applicantsFile = Files.createTempFile("applicants", ".json");
         Path jobsFile = Files.createTempFile("jobs", ".json");
         Path cvsFile = Files.createTempFile("cvs", ".json");
+        Path cvRootDirectory = Files.createTempDirectory("cv-root");
         Path applicationsFile = Files.createTempFile("applications", ".json");
         Path settingsFile = Files.createTempFile("settings", ".json");
         Path policiesFile = Files.createTempFile("applicant-limit-policies", ".json");
@@ -125,7 +126,10 @@ class JobRecommendationServiceTest {
         ApplicationDaoImpl applicationDao = new ApplicationDaoImpl(applicationsFile);
         JobDaoImpl jobDao = new JobDaoImpl(jobsFile);
         JobService jobService = new JobService(jobDao, applicationDao, new MessageService());
-        CvService cvService = new CvService(applicantService, new com.bupt.tarecruit.dao.impl.CvDaoImpl(cvsFile));
+        CvService cvService = new CvService(
+                applicantService,
+                new com.bupt.tarecruit.dao.impl.CvDaoImpl(cvsFile),
+                cvRootDirectory);
         SettingsService settingsService = new SettingsService(settingsFile);
         RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService(
                 applicationDao,
