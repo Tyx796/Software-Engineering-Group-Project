@@ -7,6 +7,9 @@ import com.bupt.tarecruit.util.DataValidator;
 import java.nio.file.Path;
 import java.time.Instant;
 
+/**
+ * Reads and updates global system settings.
+ */
 public class SettingsService {
     private final SettingsDao settingsDao;
 

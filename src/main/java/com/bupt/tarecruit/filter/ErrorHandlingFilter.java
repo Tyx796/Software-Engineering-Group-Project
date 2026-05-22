@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Converts unexpected runtime errors into a generic error page while logging the
+ * technical details server-side.
+ */
 public class ErrorHandlingFilter implements Filter {
     private static final Logger LOGGER = Logger.getLogger(ErrorHandlingFilter.class.getName());
     private static final String SAFE_ERROR_MESSAGE = "An unexpected error occurred. Please try again later.";

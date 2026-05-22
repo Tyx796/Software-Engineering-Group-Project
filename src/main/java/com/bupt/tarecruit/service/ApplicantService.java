@@ -10,6 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Maintains applicant profile data used for applications, matching, and review.
+ *
+ * <p>Profiles store identity, programme, contact details, skills, availability,
+ * and linked CV filename. The service keeps profile validation separate from web
+ * form handling so tests can exercise workflow behaviour directly.</p>
+ */
 public class ApplicantService {
     private final ApplicantDao applicantDao;
 
@@ -25,6 +32,9 @@ public class ApplicantService {
         this.applicantDao = applicantDao;
     }
 
+    /**
+     * Creates or updates an applicant profile and normalises multi-value fields.
+     */
     public Applicant createProfile(final String userId, final String fullName, final String phone,
             final String studentId, final String programme, final String bio) {
         return createProfile(userId, fullName, phone, studentId, programme, bio, List.of(), List.of());
@@ -99,6 +109,10 @@ public class ApplicantService {
         return findByUserId(userId).filter(this::isProfileComplete).isPresent();
     }
 
+    /**
+     * Returns whether the mandatory profile fields are ready for application
+     * submission.
+     */
     public boolean isProfileComplete(final Applicant profile) {
         return profile != null
                 && isNonBlank(profile.getUserId())

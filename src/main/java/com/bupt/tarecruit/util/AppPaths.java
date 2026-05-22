@@ -4,6 +4,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Resolves runtime filesystem locations for JSON data and uploaded CV files.
+ *
+ * <p>The resolver supports explicit configuration through
+ * {@code -Dtarecruit.data.dir} or {@code TARECRUIT_DATA_DIR}, then falls back to
+ * the project data folder or Tomcat's catalina base directory.</p>
+ */
 public final class AppPaths {
     private static final String DATA_DIR_PROPERTY = "tarecruit.data.dir";
     private static final String DATA_DIR_ENV = "TARECRUIT_DATA_DIR";
@@ -12,6 +19,9 @@ public final class AppPaths {
     private AppPaths() {
     }
 
+    /**
+     * Returns the configured data directory and creates it if needed.
+     */
     public static Path dataDirectory() {
         Path workingDirectory = Paths.get(System.getProperty("user.dir", "."));
         Path path = resolveDataDirectory(

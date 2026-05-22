@@ -11,6 +11,14 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Builds organiser-facing application review rows.
+ *
+ * <p>The service joins applications with applicant profiles and skill match data,
+ * then applies organiser-selected status filters, keyword search, and sort order.
+ * It is separated from the servlet so filtering and sorting can be tested without
+ * a servlet container.</p>
+ */
 public class OrganiserApplicationReviewService {
     private final JobService jobService;
     private final ApplicationService applicationService;
@@ -31,6 +39,9 @@ public class OrganiserApplicationReviewService {
         this.skillMatchService = skillMatchService;
     }
 
+    /**
+     * Returns filtered and sorted review views for a job owned by the organiser.
+     */
     public List<OrganiserApplicationReviewView> getReviewViews(final String organiserUserId,
             final String jobId,
             final String statusFilter,

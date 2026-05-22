@@ -24,6 +24,14 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Provides administrator-level reporting, limit management, and supervision
+ * views across all users, jobs, and applications.
+ *
+ * <p>The admin service combines user, applicant, job, application, settings, and
+ * recruitment policy data into dashboard summaries, workload views, per-applicant
+ * limit views, and job supervision views.</p>
+ */
 public class AdminService {
     public static final int DEFAULT_WORKLOAD_THRESHOLD = 20;
 
@@ -70,6 +78,9 @@ public class AdminService {
         return settingsService.updateDefaultApplicantApplicationLimit(limit);
     }
 
+    /**
+     * Builds the applicant limit management table used by the admin user page.
+     */
     public List<ApplicantLimitAdminView> getApplicantLimitViews() {
         return userService.getAllUsers().stream()
                 .filter(user -> user.getRole() == Role.APPLICANT)
@@ -142,6 +153,10 @@ public class AdminService {
         return summary;
     }
 
+    /**
+     * Builds workload rows with accepted assignments and overload status for the
+     * supplied weekly-hour threshold.
+     */
     public List<ApplicantWorkloadView> getApplicantWorkloadViews(final int workloadThreshold) {
         if (workloadThreshold <= 0) {
             throw new IllegalArgumentException("Workload threshold must be greater than zero.");

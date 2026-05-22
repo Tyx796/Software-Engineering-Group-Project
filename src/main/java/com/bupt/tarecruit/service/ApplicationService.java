@@ -13,6 +13,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Coordinates applicant application submission, organiser review decisions, and
+ * applicant withdrawal workflow.
+ *
+ * <p>This service enforces the central recruitment rules: applicants must have a
+ * complete profile and CV, duplicate active applications are blocked, application
+ * limits are checked, job capacity is respected, and accepted withdrawals notify
+ * the owning organiser.</p>
+ */
 public class ApplicationService {
     private static final String APPLICANT_LIMIT_REACHED_MESSAGE =
             "You have reached your application limit. Please contact Admin if you need an adjustment.";
@@ -55,6 +64,16 @@ public class ApplicationService {
         this.recruitmentPolicyService = recruitmentPolicyService;
     }
 
+    /**
+     * Creates a pending application for an applicant and job after all workflow
+     * preconditions have passed.
+     *
+     * @param applicantUserId authenticated applicant user ID
+     * @param jobId target job ID
+     * @return the persisted pending application
+     * @throws IllegalArgumentException when profile, CV, duplicate, limit, status,
+     *         deadline, or capacity checks fail
+     */
     public Application submitApplication(final String applicantUserId, final String jobId) {
         DataValidator.validateRequired(applicantUserId, "Applicant user ID");
         DataValidator.validateRequired(jobId, "Job ID");
@@ -139,6 +158,17 @@ public class ApplicationService {
                 .toList();
     }
 
+    /**
+     * Allows the owning organiser to make a final accept or reject decision.
+     *
+     * <p>When an accept decision fills the job quota, remaining pending or
+     * reviewing applications for that job are rejected automatically.</p>
+     *
+     * @param organiserUserId authenticated organiser user ID
+     * @param applicationId target application ID
+     * @param status final decision, limited to {@code ACCEPTED} or {@code REJECTED}
+     * @return the updated application
+     */
     public Application updateStatusForOrganiser(final String organiserUserId, final String applicationId,
             final ApplicationStatus status) {
         DataValidator.validateRequired(organiserUserId, "Organiser user ID");
@@ -168,6 +198,13 @@ public class ApplicationService {
         return application;
     }
 
+    /**
+     * Withdraws an application on behalf of its applicant owner.
+     *
+     * @param applicantUserId authenticated applicant user ID
+     * @param applicationId target application ID
+     * @return the withdrawn application
+     */
     public Application withdrawApplicationByApplicant(final String applicantUserId, final String applicationId) {
         DataValidator.validateRequired(applicantUserId, "Applicant user ID");
         DataValidator.validateRequired(applicationId, "Application ID");
