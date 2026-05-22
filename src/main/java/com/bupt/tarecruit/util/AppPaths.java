@@ -4,18 +4,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Resolves runtime filesystem locations for JSON data and uploaded CV files.
+ *
+ * <p>The resolver supports explicit configuration through
+ * {@code -Dtarecruit.data.dir} or {@code TARECRUIT_DATA_DIR}, then falls back to
+ * the project data folder or Tomcat's catalina base directory.</p>
+ */
 public final class AppPaths {
     private static final String DATA_DIR_PROPERTY = "tarecruit.data.dir";
     private static final String DATA_DIR_ENV = "TARECRUIT_DATA_DIR";
+    private static final String CATALINA_BASE_PROPERTY = "catalina.base";
 
     private AppPaths() {
     }
 
+    /**
+     * Returns the configured data directory and creates it if needed.
+     */
     public static Path dataDirectory() {
         Path workingDirectory = Paths.get(System.getProperty("user.dir", "."));
         Path path = resolveDataDirectory(
                 System.getProperty(DATA_DIR_PROPERTY),
                 System.getenv(DATA_DIR_ENV),
+                System.getProperty(CATALINA_BASE_PROPERTY),
                 workingDirectory);
         ensureDirectory(path);
         return path;
@@ -38,12 +50,17 @@ public final class AppPaths {
     static Path resolveDataDirectory(
             final String systemPropertyValue,
             final String environmentValue,
+            final String catalinaBaseValue,
             final Path workingDirectory) {
         String configured = firstNonBlank(systemPropertyValue, environmentValue);
         if (configured != null) {
             return Paths.get(configured).toAbsolutePath().normalize();
         }
-        return resolveProjectDataDirectory(workingDirectory);
+        try {
+            return resolveProjectDataDirectory(workingDirectory);
+        } catch (IllegalStateException ignored) {
+            return resolveCatalinaDataDirectory(catalinaBaseValue);
+        }
     }
 
     static Path resolveProjectDataDirectory(final Path workingDirectory) {
@@ -53,6 +70,16 @@ public final class AppPaths {
                 return current.resolve("data").toAbsolutePath().normalize();
             }
             current = current.getParent();
+        }
+        throw new IllegalStateException(
+                "Unable to resolve the application data directory. Set "
+                        + DATA_DIR_PROPERTY + " or " + DATA_DIR_ENV
+                        + ", or start the application from the project directory.");
+    }
+
+    static Path resolveCatalinaDataDirectory(final String catalinaBaseValue) {
+        if (catalinaBaseValue != null && !catalinaBaseValue.isBlank()) {
+            return Paths.get(catalinaBaseValue).resolve("data").toAbsolutePath().normalize();
         }
         throw new IllegalStateException(
                 "Unable to resolve the application data directory. Set "

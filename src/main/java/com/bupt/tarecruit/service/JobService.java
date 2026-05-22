@@ -18,6 +18,14 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Manages job posting lifecycle operations for module organisers and applicant
+ * job discovery.
+ *
+ * <p>The service validates job data, normalises requirement lists, filters out
+ * closed or expired jobs for applicants, and cascades cancellation updates to
+ * related applications and messages.</p>
+ */
 public class JobService {
     public static final String STATUS_OPEN = "OPEN";
     public static final String STATUS_CANCELLED = "CANCELLED";
@@ -44,28 +52,81 @@ public class JobService {
         this.messageService = messageService;
     }
 
+    /**
+     * Creates a new open job owned by the given organiser.
+     *
+     * @param organiserUserId organiser creating the job
+     * @param title job title
+     * @param department owning department or module area
+     * @param description job description
+     * @param requirementsText comma or newline separated requirements
+     * @param hoursPerWeek expected weekly workload
+     * @param deadline last application date
+     * @return the persisted job
+     */
     public Job createJob(final String organiserUserId, final String title, final String department,
             final String description, final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
-        validateJobData(title, department, description, requirementsText, hoursPerWeek, deadline);
+        return createJob(
+                organiserUserId,
+                title,
+                department,
+                description,
+                requirementsText,
+                hoursPerWeek,
+                1,
+                deadline);
+    }
+
+    /**
+     * Creates a new open job with an explicit assistant quota.
+     *
+     * @param assistantQuota number of assistants to recruit
+     */
+    public Job createJob(final String organiserUserId, final String title, final String department,
+            final String description, final String requirementsText, final int hoursPerWeek,
+            final int assistantQuota, final LocalDate deadline) {
+        validateJobData(title, department, description, requirementsText, hoursPerWeek, assistantQuota, deadline);
         Job job = Job.create(organiserUserId);
-        applyJobData(job, title, department, description, requirementsText, hoursPerWeek, deadline);
+        applyJobData(job, title, department, description, requirementsText, hoursPerWeek, assistantQuota, deadline);
         jobDao.save(job);
         return job;
+    }
+
+    /**
+     * Updates a job after verifying that it belongs to the organiser and is not
+     * cancelled.
+     */
+    public Job updateJobForOrganiser(final String organiserUserId, final String jobId, final String title,
+            final String department, final String description, final String requirementsText,
+            final int hoursPerWeek, final LocalDate deadline) {
+        return updateJobForOrganiser(
+                organiserUserId,
+                jobId,
+                title,
+                department,
+                description,
+                requirementsText,
+                hoursPerWeek,
+                1,
+                deadline);
     }
 
     public Job updateJobForOrganiser(final String organiserUserId, final String jobId, final String title,
             final String department, final String description, final String requirementsText,
-            final int hoursPerWeek, final LocalDate deadline) {
+            final int hoursPerWeek, final int assistantQuota, final LocalDate deadline) {
         Job job = getOwnedJobForOrganiser(organiserUserId, jobId);
         if (STATUS_CANCELLED.equals(job.getStatus())) {
             throw new IllegalArgumentException("Cancelled jobs cannot be edited.");
         }
-        validateJobData(title, department, description, requirementsText, hoursPerWeek, deadline);
-        applyJobData(job, title, department, description, requirementsText, hoursPerWeek, deadline);
+        validateJobData(title, department, description, requirementsText, hoursPerWeek, assistantQuota, deadline);
+        applyJobData(job, title, department, description, requirementsText, hoursPerWeek, assistantQuota, deadline);
         jobDao.save(job);
         return job;
     }
 
+    /**
+     * Cancels a job and marks related applications as cancelled.
+     */
     public Job cancelJobForOrganiser(final String organiserUserId, final String jobId) {
         Job job = getOwnedJobForOrganiser(organiserUserId, jobId);
         if (STATUS_CANCELLED.equals(job.getStatus())) {
@@ -86,6 +147,9 @@ public class JobService {
         return sortJobs(filterExpiredJobs(getAllJobs()));
     }
 
+    /**
+     * Searches currently available jobs by title, department, or requirement.
+     */
     public List<Job> searchAvailableJobs(final String keyword) {
         List<Job> availableJobs = getAvailableJobs();
         if (keyword == null || keyword.isBlank()) {
@@ -127,6 +191,10 @@ public class JobService {
         job.setDeadline(deadline);
     }
 
+    public void setQuota(final Job job, final int assistantQuota) {
+        job.setAssistantQuota(assistantQuota);
+    }
+
     public List<Job> getJobsByOrganiser(final String organiserUserId) {
         return jobDao.findByOrganiserId(organiserUserId);
     }
@@ -152,11 +220,18 @@ public class JobService {
 
     public void validateJobData(final String title, final String department, final String description,
             final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
+        validateJobData(title, department, description, requirementsText, hoursPerWeek, 1, deadline);
+    }
+
+    public void validateJobData(final String title, final String department, final String description,
+            final String requirementsText, final int hoursPerWeek, final int assistantQuota,
+            final LocalDate deadline) {
         DataValidator.validateRequired(title, "Job title");
         DataValidator.validateRequired(department, "Department");
         DataValidator.validateRequired(description, "Job description");
         DataValidator.validateRequired(requirementsText, "Requirements");
         DataValidator.validatePositive(hoursPerWeek, "Hours per week");
+        DataValidator.validatePositive(assistantQuota, "Assistant quota");
         DataValidator.validateDeadline(deadline);
     }
 
@@ -169,11 +244,18 @@ public class JobService {
 
     private void applyJobData(final Job job, final String title, final String department, final String description,
             final String requirementsText, final int hoursPerWeek, final LocalDate deadline) {
+        applyJobData(job, title, department, description, requirementsText, hoursPerWeek, 1, deadline);
+    }
+
+    private void applyJobData(final Job job, final String title, final String department, final String description,
+            final String requirementsText, final int hoursPerWeek, final int assistantQuota,
+            final LocalDate deadline) {
         job.setTitle(title.trim());
         job.setDepartment(department.trim());
         job.setDescription(description.trim());
         job.setRequirements(parseRequirements(requirementsText));
         setWorkloadAndDeadline(job, hoursPerWeek, deadline);
+        setQuota(job, assistantQuota);
     }
 
     private List<String> parseRequirements(final String requirementsText) {

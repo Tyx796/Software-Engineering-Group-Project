@@ -11,10 +11,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet("/applicant/cv")
 @MultipartConfig
 public class CvUploadServlet extends BaseServlet {
+    private static final Logger LOGGER = Logger.getLogger(CvUploadServlet.class.getName());
+    private static final String CV_STORAGE_ERROR_MESSAGE = "We could not save your CV. Please try again later.";
+
     private final CvService cvService = new CvService();
     private final ApplicantService applicantService = new ApplicantService();
 
@@ -41,8 +46,11 @@ public class CvUploadServlet extends BaseServlet {
             cvService.uploadCV(user.getId(), part.getSubmittedFileName(), part.getInputStream());
             request.getSession().setAttribute("flash",
                     replacingExistingCv ? "CV replaced successfully." : "CV uploaded successfully.");
-        } catch (IllegalArgumentException | IllegalStateException exception) {
+        } catch (IllegalArgumentException exception) {
             request.getSession().setAttribute("flash", exception.getMessage());
+        } catch (IllegalStateException exception) {
+            LOGGER.log(Level.SEVERE, "CV upload failed for user " + user.getId(), exception);
+            request.getSession().setAttribute("flash", CV_STORAGE_ERROR_MESSAGE);
         }
         redirect(request, response, "/applicant/cv");
     }

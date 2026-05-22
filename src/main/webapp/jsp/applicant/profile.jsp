@@ -1,64 +1,105 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Applicant Profile"/>
+<c:set var="pageSection" value="applicant-profile"/>
 <%@ include file="../common/header.jsp" %>
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-    <div>
-        <h1 class="h3 mb-1">Applicant profile</h1>
-        <p class="text-muted mb-0">Complete your profile to get ready for TA applications.</p>
+<section class="page-hero profile-hero">
+    <div class="hero-copy">
+        <div class="section-kicker">Profile builder</div>
+        <h1 class="h2 mb-2">Applicant profile</h1>
+        <p class="mb-0">Keep the essentials grouped, make your strengths easy to scan, and stay ready for the roles you want to pursue.</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="hero-actions">
         <a class="btn btn-outline-dark" href="${pageContext.request.contextPath}/applicant/applications">My applications</a>
         <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/applicant/jobs">Browse jobs</a>
     </div>
-</div>
-<div class="row g-4">
-    <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <form method="post" action="${pageContext.request.contextPath}/applicant/profile" class="needs-validation" novalidate>
+</section>
+
+<div class="profile-shell">
+    <section class="workspace-card profile-form-card">
+        <div class="card-body">
+            <form method="post" action="${pageContext.request.contextPath}/applicant/profile" class="needs-validation" novalidate>
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <div>
+                            <div class="section-kicker">Core details</div>
+                            <h2 class="section-title">Personal basics</h2>
+                        </div>
+                        <p class="text-muted mb-0">These details are used to identify you across applications and reviewer screens.</p>
+                    </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Full name</label>
                             <input class="form-control" type="text" name="fullName" required value="${profile.fullName}">
+                            <div class="invalid-feedback">Please enter your full name.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Phone</label>
                             <input class="form-control" type="tel" name="phone" required value="${profile.phone}" pattern="[+0-9()\-\s]{6,20}">
+                            <div class="invalid-feedback">Please enter a valid phone number.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Student ID</label>
                             <input class="form-control" type="text" name="studentId" required value="${profile.studentId}">
+                            <div class="invalid-feedback">Please enter your student ID.</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Programme</label>
                             <input class="form-control" type="text" name="programme" required value="${profile.programme}">
+                            <div class="invalid-feedback">Please enter your programme.</div>
                         </div>
                         <div class="col-12">
                             <label class="form-label">Bio</label>
                             <textarea class="form-control" name="bio" rows="4" placeholder="Summarise your teaching, tutoring, or academic strengths.">${profile.bio}</textarea>
                         </div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <div>
+                            <div class="section-kicker">Signals</div>
+                            <h2 class="section-title">Skills snapshot</h2>
+                        </div>
+                        <p class="text-muted mb-0">These skills feed later readiness, matching, and reviewer context.</p>
+                    </div>
+                    <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label">Skills</label>
-                            <textarea class="form-control" name="skills" rows="3"
+                            <textarea class="form-control" name="skills" rows="4"
                                       placeholder="Use commas or new lines, e.g. Java, SQL, Communication">${skillsText}</textarea>
-                            <div class="form-text">These skills will be used later for application readiness and review.</div>
+                            <div class="form-text">Use concise entries so they are easy to match against job requirements.</div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <div>
+                            <div class="section-kicker">Availability</div>
+                            <h2 class="section-title">Preferred working days</h2>
+                        </div>
+                        <p class="text-muted mb-0">Share when you are most available so organisers can quickly judge fit.</p>
+                    </div>
+                    <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label">Preferred working days</label>
-                            <textarea class="form-control" name="preferredWorkingDays" rows="2"
+                            <textarea class="form-control" name="preferredWorkingDays" rows="3"
                                       placeholder="For example: Monday, Wednesday">${preferredWorkingDaysText}</textarea>
                         </div>
                     </div>
-                    <button class="btn btn-primary mt-3" type="submit">Save profile</button>
-                </form>
-            </div>
+                </div>
+                <button class="btn btn-primary mt-2" type="submit">Save profile</button>
+            </form>
         </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="card shadow-sm h-100">
+    </section>
+
+    <aside class="profile-aside">
+        <div class="workspace-card checklist-card">
             <div class="card-body">
-                <h2 class="h5 mb-3">Iteration 1 checklist</h2>
+                <div class="checklist-art" aria-hidden="true"></div>
+                <div class="section-kicker mb-2">Readiness</div>
+                <h2 class="h5 mb-3">Application checklist</h2>
                 <ul class="list-group list-group-flush small readiness-list">
                     <li class="list-group-item d-flex justify-content-between px-0">
                         <span>Profile details</span>
@@ -80,9 +121,15 @@
                         </c:choose>
                     </li>
                 </ul>
+                <div class="status-prompt mt-3">
+                    <c:choose>
+                        <c:when test="${empty currentCvFileName}">Upload your CV to complete the full application setup.</c:when>
+                        <c:otherwise>Current CV: ${currentCvFileName}</c:otherwise>
+                    </c:choose>
+                </div>
                 <a class="btn btn-outline-primary mt-3 w-100" href="${pageContext.request.contextPath}/applicant/cv">Manage CV</a>
             </div>
         </div>
-    </div>
+    </aside>
 </div>
 <%@ include file="../common/footer.jsp" %>

@@ -43,7 +43,7 @@
     "id": "U-demo-applicant-3",
     "username": "applicant_demo_3",
     "email": "applicant3@example.com",
-    "passwordHash": "v2$4733dff05c0c7cd19ed9fe77d3d04068$f5511f5c50f7edb50f106d88845640eee9bd24c0eeec0a23c9f93bc83b7c9ab8",
+    "passwordHash": "v2$3d41affce096ee7f4ace36913ec57a10$badb3e1aad93ded94cebd4f9232d697cd39226ec681634993b07d52926df1e2d",
     "role": "APPLICANT",
     "createdAt": "2026-03-20T00:00:00Z"
   }

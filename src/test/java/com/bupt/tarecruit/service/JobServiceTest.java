@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.bupt.tarecruit.dao.impl.ApplicantLimitPolicyDaoImpl;
 import com.bupt.tarecruit.dao.impl.ApplicationDaoImpl;
 import com.bupt.tarecruit.dao.impl.CvDaoImpl;
 import com.bupt.tarecruit.dao.impl.JobDaoImpl;
@@ -202,12 +203,52 @@ class JobServiceTest {
                 "Support testing labs and revision sessions.",
                 "JUnit\nMocking\nFeedback",
                 10,
+                3,
                 LocalDate.now().plusDays(10));
 
         assertEquals("Advanced Software Testing TA", updated.getTitle());
         assertEquals(10, updated.getHoursPerWeek());
+        assertEquals(3, updated.getAssistantQuota());
         assertEquals(3, updated.getRequirements().size());
         assertEquals("Advanced Software Testing TA", service.findById(job.getId()).orElseThrow().getTitle());
+    }
+
+    @Test
+    void organiserCanCreateJobWithCustomAssistantQuota() throws Exception {
+        Path file = Files.createTempFile("jobs", ".json");
+        JobService service = new JobService(file);
+
+        Job job = service.createJob(
+                "organiser-1",
+                "Software Engineering TA",
+                "Computer Science",
+                "Support software engineering labs.",
+                "Java\nGit",
+                8,
+                4,
+                LocalDate.now().plusDays(7));
+
+        assertEquals(4, job.getAssistantQuota());
+        assertEquals(4, service.findById(job.getId()).orElseThrow().getAssistantQuota());
+    }
+
+    @Test
+    void assistantQuotaMustBeGreaterThanZero() throws Exception {
+        Path file = Files.createTempFile("jobs", ".json");
+        JobService service = new JobService(file);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.createJob(
+                        "organiser-1",
+                        "Software Engineering TA",
+                        "Computer Science",
+                        "Support software engineering labs.",
+                        "Java\nGit",
+                        8,
+                        0,
+                        LocalDate.now().plusDays(7)));
+        assertEquals("Assistant quota must be greater than zero.", exception.getMessage());
     }
 
     @Test
@@ -362,20 +403,31 @@ class JobServiceTest {
         Path cvsFile = Files.createTempFile("cvs", ".json");
         Path applicationsFile = Files.createTempFile("applications", ".json");
         Path messagesFile = Files.createTempFile("messages", ".json");
+        Path settingsFile = Files.createTempFile("settings", ".json");
+        Path policiesFile = Files.createTempFile("applicant-limit-policies", ".json");
 
         ApplicantService applicantService = new ApplicantService(applicantsFile);
         MessageService messageService = new MessageService(messagesFile);
+        ApplicationDaoImpl applicationDao = new ApplicationDaoImpl(applicationsFile);
+        JobDaoImpl jobDao = new JobDaoImpl(jobsFile);
         JobService jobService = new JobService(
-                new JobDaoImpl(jobsFile),
-                new ApplicationDaoImpl(applicationsFile),
+                jobDao,
+                applicationDao,
                 messageService);
         CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile));
+        SettingsService settingsService = new SettingsService(settingsFile);
+        RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService(
+                applicationDao,
+                jobDao,
+                new ApplicantLimitPolicyDaoImpl(policiesFile),
+                settingsService);
         ApplicationService applicationService = new ApplicationService(
                 applicantService,
                 jobService,
                 cvService,
-                new ApplicationDaoImpl(applicationsFile),
-                messageService);
+                applicationDao,
+                messageService,
+                recruitmentPolicyService);
 
         return new TestContext(applicantService, jobService, cvService, applicationService, messageService);
     }

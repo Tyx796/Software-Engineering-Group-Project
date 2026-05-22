@@ -22,5 +22,12 @@
     "status": "REJECTED",
     "appliedAt": "2026-04-04T12:20:49.025486500Z",
     "reviewedAt": "2026-04-04T12:21:07.746967Z"
+  },
+  {
+    "id": "APP-804ade79-a1ca-45da-91be-4e5211fa2ab7",
+    "applicantUserId": "U-demo-applicant-3",
+    "jobId": "J-demo-2",
+    "status": "PENDING",
+    "appliedAt": "2026-05-05T01:03:38.361777Z"
   }
 ]
