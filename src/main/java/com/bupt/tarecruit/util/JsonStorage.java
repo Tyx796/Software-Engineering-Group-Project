@@ -14,6 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Thread-safe JSON persistence helper used by DAO implementations.
+ *
+ * <p>The helper serialises lists and single settings objects with Gson, including
+ * adapters for {@link Instant} and {@link LocalDate}. Missing files are created
+ * with default values so local deployments can start from a clean data folder.</p>
+ */
 public final class JsonStorage {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Instant.class, (com.google.gson.JsonSerializer<Instant>) (src, typeOfSrc, context) -> new com.google.gson.JsonPrimitive(src.toString()))
@@ -26,6 +33,9 @@ public final class JsonStorage {
     private JsonStorage() {
     }
 
+    /**
+     * Reads a JSON array from disk and returns a mutable copy.
+     */
     public static synchronized <T> List<T> readList(final Path path, final TypeToken<List<T>> typeToken) {
         Type type = typeToken.getType();
         try {

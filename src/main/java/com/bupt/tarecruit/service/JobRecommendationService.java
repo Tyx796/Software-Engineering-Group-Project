@@ -9,6 +9,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Produces an applicant-specific shortlist of open jobs.
+ *
+ * <p>Recommendations exclude jobs already applied for, full jobs, closed jobs,
+ * and expired jobs, then rank the remaining jobs by skill match score, deadline,
+ * and title. The score comes from {@link SkillMatchService}, making each
+ * recommendation explainable on the applicant screens.</p>
+ */
 public class JobRecommendationService {
     public static final int DEFAULT_LIMIT = 3;
 
@@ -39,6 +47,9 @@ public class JobRecommendationService {
         this.skillMatchService = skillMatchService;
     }
 
+    /**
+     * Returns the best matching jobs for an applicant profile.
+     */
     public List<JobRecommendationView> getRecommendedJobsForApplicant(final String applicantUserId, final int limit) {
         Applicant applicant = applicantService.findByUserId(applicantUserId).orElse(null);
         if (applicant == null || limit <= 0) {

@@ -11,6 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Ensures protected role areas are only accessed by logged-in users.
+ */
 @WebFilter(urlPatterns = {"/applicant/*", "/organiser/*", "/admin/*"})
 public class AuthenticationFilter implements Filter {
     @Override
