@@ -192,6 +192,7 @@ public class ApplicationService {
             application.setReviewedAt(Instant.now());
         }
         applicationDao.save(application);
+        sendStatusChangeMessage(organiserUserId, application, status);
         if (status == ApplicationStatus.ACCEPTED) {
             rejectRemainingActiveApplicationsIfJobFilled(application);
         }
@@ -221,9 +222,7 @@ public class ApplicationService {
         ApplicationStatus previousStatus = application.getStatus();
         application.setStatus(ApplicationStatus.WITHDRAWN);
         applicationDao.save(application);
-        if (previousStatus == ApplicationStatus.ACCEPTED) {
-            sendAcceptedWithdrawalMessage(application);
-        }
+        sendWithdrawalMessage(application, previousStatus);
         return application;
     }
 
@@ -252,6 +251,8 @@ public class ApplicationService {
         if (!recruitmentPolicyService.isJobFull(acceptedApplication.getJobId())) {
             return;
         }
+        Job job = jobService.findById(acceptedApplication.getJobId())
+                .orElseThrow(() -> new IllegalArgumentException("The selected job does not exist."));
         Instant rejectionTime = Instant.now();
         applicationDao.findByJobId(acceptedApplication.getJobId()).stream()
                 .filter(application -> !acceptedApplication.getId().equals(application.getId()))
@@ -263,6 +264,14 @@ public class ApplicationService {
                         application.setReviewedAt(rejectionTime);
                     }
                     applicationDao.save(application);
+                    messageService.sendMessage(
+                            job.getOrganiserUserId(),
+                            application.getApplicantUserId(),
+                            "Application Rejected",
+                            "Your application for " + job.getTitle() + " has been rejected as the position is now filled.",
+                            MessageType.APPLICATION_REJECTED,
+                            application.getId(),
+                            job.getId());
                 });
     }
 
@@ -283,14 +292,46 @@ public class ApplicationService {
                 || status == ApplicationStatus.ACCEPTED;
     }
 
-    private void sendAcceptedWithdrawalMessage(final Application application) {
+    private void sendStatusChangeMessage(final String organiserUserId, final Application application,
+            final ApplicationStatus status) {
         Job job = jobService.findById(application.getJobId())
                 .orElseThrow(() -> new IllegalArgumentException("The selected job does not exist."));
+        String subject;
+        String content;
+        MessageType type;
+        if (status == ApplicationStatus.ACCEPTED) {
+            subject = "Application Accepted";
+            content = "Your application for " + job.getTitle() + " has been accepted.";
+            type = MessageType.APPLICATION_ACCEPTED;
+        } else {
+            subject = "Application Rejected";
+            content = "Your application for " + job.getTitle() + " has been rejected.";
+            type = MessageType.APPLICATION_REJECTED;
+        }
+        messageService.sendMessage(
+                organiserUserId,
+                application.getApplicantUserId(),
+                subject,
+                content,
+                type,
+                application.getId(),
+                job.getId());
+    }
+
+    private void sendWithdrawalMessage(final Application application, final ApplicationStatus previousStatus) {
+        Job job = jobService.findById(application.getJobId())
+                .orElseThrow(() -> new IllegalArgumentException("The selected job does not exist."));
+        String content;
+        if (previousStatus == ApplicationStatus.ACCEPTED) {
+            content = "An accepted application was withdrawn for " + job.getTitle() + ".";
+        } else {
+            content = "An application was withdrawn for " + job.getTitle() + ".";
+        }
         messageService.sendMessage(
                 application.getApplicantUserId(),
                 job.getOrganiserUserId(),
                 "Application Withdrawn",
-                "An accepted application was withdrawn for " + job.getTitle() + ".",
+                content,
                 MessageType.APPLICATION_WITHDRAWN,
                 application.getId(),
                 job.getId());

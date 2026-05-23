@@ -540,7 +540,7 @@ class ApplicationServiceTest {
     }
 
     @Test
-    void pendingAndReviewingWithdrawalsDoNotNotifyOrganiser() throws Exception {
+    void pendingAndReviewingWithdrawalsNotifyOrganiser() throws Exception {
         TestContext context = createContext();
         Job pendingJob = createOpenJob(context.jobService, "organiser-1");
         Job reviewingJob = createOpenJob(context.jobService, "organiser-1");
@@ -554,7 +554,9 @@ class ApplicationServiceTest {
         context.applicationService.withdrawApplicationByApplicant("user-1", pending.getId());
         context.applicationService.withdrawApplicationByApplicant("user-1", reviewing.getId());
 
-        assertTrue(context.messageService.getMessagesForRecipient("organiser-1").isEmpty());
+        List<Message> organiserMessages = context.messageService.getMessagesForRecipient("organiser-1");
+        assertEquals(2, organiserMessages.size());
+        assertTrue(organiserMessages.stream().allMatch(m -> m.getType() == MessageType.APPLICATION_WITHDRAWN));
     }
 
     @Test
