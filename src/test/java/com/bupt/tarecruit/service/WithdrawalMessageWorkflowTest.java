@@ -3,6 +3,7 @@ package com.bupt.tarecruit.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.bupt.tarecruit.dao.impl.ApplicantLimitPolicyDaoImpl;
 import com.bupt.tarecruit.dao.impl.ApplicationDaoImpl;
 import com.bupt.tarecruit.dao.impl.CvDaoImpl;
 import com.bupt.tarecruit.dao.impl.JobDaoImpl;
@@ -106,22 +107,33 @@ class WithdrawalMessageWorkflowTest {
         Path cvsFile = Files.createTempFile("cvs", ".json");
         Path applicationsFile = Files.createTempFile("applications", ".json");
         Path messagesFile = Files.createTempFile("messages", ".json");
+        Path settingsFile = Files.createTempFile("settings", ".json");
+        Path policiesFile = Files.createTempFile("applicant-limit-policies", ".json");
         Path cvRootDirectory = Files.createTempDirectory("cv-root");
 
         UserService userService = new UserService(usersFile);
         ApplicantService applicantService = new ApplicantService(applicantsFile);
         MessageService messageService = new MessageService(messagesFile);
+        ApplicationDaoImpl applicationDao = new ApplicationDaoImpl(applicationsFile);
+        JobDaoImpl jobDao = new JobDaoImpl(jobsFile);
         JobService jobService = new JobService(
-                new JobDaoImpl(jobsFile),
-                new ApplicationDaoImpl(applicationsFile),
+                jobDao,
+                applicationDao,
                 messageService);
         CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile), cvRootDirectory);
+        SettingsService settingsService = new SettingsService(settingsFile);
+        RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService(
+                applicationDao,
+                jobDao,
+                new ApplicantLimitPolicyDaoImpl(policiesFile),
+                settingsService);
         ApplicationService applicationService = new ApplicationService(
                 applicantService,
                 jobService,
                 cvService,
-                new ApplicationDaoImpl(applicationsFile),
-                messageService);
+                applicationDao,
+                messageService,
+                recruitmentPolicyService);
 
         return new TestContext(userService, applicantService, jobService, cvService, applicationService, messageService);
     }

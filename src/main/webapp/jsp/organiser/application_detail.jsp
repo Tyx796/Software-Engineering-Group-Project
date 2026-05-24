@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Application Review"/>
+<c:set var="pageSection" value="organiser-jobs"/>
+<c:set var="pageAutoRefreshSeconds" value="30"/>
+<c:set var="pageAutoRefreshLabel" value="Organiser application review status"/>
 <%@ include file="../common/header.jsp" %>
 <c:choose>
     <c:when test="${empty application}">
@@ -52,7 +55,7 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
                         <h2 class="h5 mb-3">Application Summary</h2>
-                        <p class="mb-2"><strong>Status:</strong> <span class="badge app-status">${application.status}</span></p>
+                        <p class="mb-2"><strong>Status:</strong> <span class="badge app-status ${applicationStatusBadgeClasses[application.status]}">${application.status}</span></p>
                         <p class="mb-2"><strong>Applied at:</strong> ${application.appliedAt}</p>
                         <c:if test="${not empty application.reviewedAt}">
                             <p class="mb-2"><strong>First reviewed at:</strong> ${application.reviewedAt}</p>
@@ -62,6 +65,14 @@
                             <p class="mb-2"><strong>Department:</strong> ${job.department}</p>
                             <p class="mb-2"><strong>Hours/week:</strong> ${job.hoursPerWeek}</p>
                             <p class="mb-2"><strong>Deadline:</strong> ${job.deadline}</p>
+                            <p class="mb-2"><strong>Filled slots:</strong> ${acceptedCount} / ${job.assistantQuota}</p>
+                            <p class="mb-2"><strong>Remaining slots:</strong> ${remainingAssistantSlots}</p>
+                            <p class="mb-2">
+                                <strong>Recruitment state:</strong>
+                                <span class="badge ${jobFull ? 'text-bg-warning' : 'text-bg-success'}">
+                                    ${jobFull ? 'Full' : 'Open'}
+                                </span>
+                            </p>
                             <p class="mb-0"><strong>Requirements:</strong> ${job.requirements}</p>
                         </c:if>
                     </div>
@@ -74,14 +85,19 @@
                             <c:when test="${application.status == 'ACCEPTED' || application.status == 'REJECTED'}">
                                 <p class="mb-0">
                                     <strong>Decision:</strong>
-                                    <span class="badge app-status">${application.status}</span>
+                                    <span class="badge app-status ${applicationStatusBadgeClasses[application.status]}">${application.status}</span>
                                 </p>
                             </c:when>
                             <c:otherwise>
                                 <form method="post" action="${pageContext.request.contextPath}/organiser/applications/status">
                                     <input type="hidden" name="applicationId" value="${application.id}">
+                                    <c:if test="${jobFull}">
+                                        <div class="alert alert-warning small">
+                                            This job is full. No more applications can be accepted.
+                                        </div>
+                                    </c:if>
                                     <div class="d-flex flex-wrap gap-2">
-                                        <button class="btn btn-success" type="submit" name="status" value="ACCEPTED">
+                                        <button class="btn btn-success" type="submit" name="status" value="ACCEPTED" ${jobFull ? 'disabled' : ''}>
                                             Accept
                                         </button>
                                         <button class="btn btn-danger" type="submit" name="status" value="REJECTED">

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Messages"/>
+<c:set var="pageSection" value="${sessionScope.currentUser.role == 'APPLICANT' ? 'applicant-messages' : 'organiser-messages'}"/>
 <%@ include file="header.jsp" %>
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>

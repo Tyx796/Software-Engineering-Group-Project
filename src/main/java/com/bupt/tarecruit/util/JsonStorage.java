@@ -12,7 +12,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
+/**
+ * Thread-safe JSON persistence helper used by DAO implementations.
+ *
+ * <p>The helper serialises lists and single settings objects with Gson, including
+ * adapters for {@link Instant} and {@link LocalDate}. Missing files are created
+ * with default values so local deployments can start from a clean data folder.</p>
+ */
 public final class JsonStorage {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Instant.class, (com.google.gson.JsonSerializer<Instant>) (src, typeOfSrc, context) -> new com.google.gson.JsonPrimitive(src.toString()))
@@ -25,6 +33,9 @@ public final class JsonStorage {
     private JsonStorage() {
     }
 
+    /**
+     * Reads a JSON array from disk and returns a mutable copy.
+     */
     public static synchronized <T> List<T> readList(final Path path, final TypeToken<List<T>> typeToken) {
         Type type = typeToken.getType();
         try {
@@ -46,6 +57,41 @@ public final class JsonStorage {
             Files.createDirectories(path.getParent());
             try (Writer writer = Files.newBufferedWriter(path)) {
                 GSON.toJson(items, writer);
+            }
+        } catch (Exception exception) {
+            throw new IllegalStateException("Unable to write " + path, exception);
+        }
+    }
+
+    public static synchronized <T> T readObject(
+            final Path path,
+            final Class<T> type,
+            final Supplier<T> defaultSupplier) {
+        try {
+            if (Files.notExists(path)) {
+                T defaultValue = defaultSupplier.get();
+                writeObject(path, defaultValue);
+                return defaultValue;
+            }
+            try (Reader reader = Files.newBufferedReader(path)) {
+                T item = GSON.fromJson(reader, type);
+                if (item != null) {
+                    return item;
+                }
+            }
+            T defaultValue = defaultSupplier.get();
+            writeObject(path, defaultValue);
+            return defaultValue;
+        } catch (Exception exception) {
+            throw new IllegalStateException("Unable to read " + path, exception);
+        }
+    }
+
+    public static synchronized void writeObject(final Path path, final Object item) {
+        try {
+            Files.createDirectories(path.getParent());
+            try (Writer writer = Files.newBufferedWriter(path)) {
+                GSON.toJson(item, writer);
             }
         } catch (Exception exception) {
             throw new IllegalStateException("Unable to write " + path, exception);

@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.bupt.tarecruit.dao.impl.ApplicantLimitPolicyDaoImpl;
 import com.bupt.tarecruit.dao.impl.ApplicationDaoImpl;
 import com.bupt.tarecruit.dao.impl.CvDaoImpl;
+import com.bupt.tarecruit.dao.impl.JobDaoImpl;
 import com.bupt.tarecruit.model.Application;
 import com.bupt.tarecruit.model.ApplicationStatus;
 import com.bupt.tarecruit.model.Job;
@@ -25,17 +27,29 @@ class Iteration2WorkflowTest {
         Path jobsFile = Files.createTempFile("jobs", ".json");
         Path cvsFile = Files.createTempFile("cvs", ".json");
         Path applicationsFile = Files.createTempFile("applications", ".json");
+        Path settingsFile = Files.createTempFile("settings", ".json");
+        Path policiesFile = Files.createTempFile("applicant-limit-policies", ".json");
         Path cvRootDirectory = Files.createTempDirectory("cv-root");
 
         UserService userService = new UserService(usersFile);
         ApplicantService applicantService = new ApplicantService(applicantsFile);
-        JobService jobService = new JobService(jobsFile);
+        ApplicationDaoImpl applicationDao = new ApplicationDaoImpl(applicationsFile);
+        JobDaoImpl jobDao = new JobDaoImpl(jobsFile);
+        JobService jobService = new JobService(jobDao);
         CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile), cvRootDirectory);
+        SettingsService settingsService = new SettingsService(settingsFile);
+        RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService(
+                applicationDao,
+                jobDao,
+                new ApplicantLimitPolicyDaoImpl(policiesFile),
+                settingsService);
         ApplicationService applicationService = new ApplicationService(
                 applicantService,
                 jobService,
                 cvService,
-                new ApplicationDaoImpl(applicationsFile));
+                applicationDao,
+                new MessageService(),
+                recruitmentPolicyService);
 
         User applicant = userService.register("Alice", "alice@example.com", "secret1", Role.APPLICANT);
         User organiser = userService.register("Olivia", "olivia@example.com", "secret1", Role.ORGANISER);

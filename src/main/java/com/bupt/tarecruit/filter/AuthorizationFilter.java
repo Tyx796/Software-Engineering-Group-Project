@@ -14,6 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Enforces role-based access to applicant, organiser, and admin URL spaces.
+ */
 @WebFilter(urlPatterns = {"/applicant/*", "/organiser/*", "/admin/*"})
 public class AuthorizationFilter implements Filter {
     @Override
