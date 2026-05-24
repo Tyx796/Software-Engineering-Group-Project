@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Job Applications"/>
+<c:set var="pageSection" value="organiser-jobs"/>
 <c:set var="pageAutoRefreshSeconds" value="30"/>
 <c:set var="pageAutoRefreshLabel" value="Organiser application queue"/>
 <%@ include file="../common/header.jsp" %>
@@ -55,7 +56,7 @@
 <c:choose>
     <c:when test="${empty reviewViews}">
         <div class="alert alert-secondary">
-                ${hasActiveFilters ? 'No applications match the current filters.' : 'No applicants have submitted an application for this job yet.'}
+            ${hasActiveFilters ? 'No applications match the current filters.' : 'No applicants have submitted an application for this job yet.'}
         </div>
     </c:when>
     <c:otherwise>

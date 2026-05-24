@@ -42,4 +42,21 @@ class ApplicantLimitPolicyDaoTest {
         assertEquals(1, dao.findAll().size());
         assertEquals(6, dao.findByUserId("user-1").orElseThrow().getApplicationLimitOverride());
     }
+
+    @Test
+    void deleteByUserIdRemovesStoredPolicy() throws Exception {
+        Path file = Files.createTempFile("applicant-limit-policies", ".json");
+        ApplicantLimitPolicyDao dao = new ApplicantLimitPolicyDaoImpl(file);
+
+        ApplicantLimitPolicy policy = new ApplicantLimitPolicy();
+        policy.setUserId("user-1");
+        policy.setApplicationLimitOverride(4);
+        policy.setUpdatedAt(Instant.now());
+        dao.save(policy);
+
+        dao.deleteByUserId("user-1");
+
+        assertTrue(dao.findByUserId("user-1").isEmpty());
+        assertEquals(0, dao.findAll().size());
+    }
 }

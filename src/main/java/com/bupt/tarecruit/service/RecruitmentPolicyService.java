@@ -11,6 +11,14 @@ import com.bupt.tarecruit.model.ApplicationStatus;
 import com.bupt.tarecruit.model.Job;
 import com.bupt.tarecruit.util.DataValidator;
 
+/**
+ * Centralises reusable recruitment policy checks.
+ *
+ * <p>The policy service resolves applicant application limits, counts active
+ * applications, counts accepted assignments for jobs, and determines remaining
+ * assistant capacity. Keeping these checks in one service avoids inconsistent
+ * rules across applicant, organiser, and admin workflows.</p>
+ */
 public class RecruitmentPolicyService {
     private final ApplicationDao applicationDao;
     private final JobDao jobDao;
@@ -31,6 +39,10 @@ public class RecruitmentPolicyService {
         this.settingsService = settingsService;
     }
 
+    /**
+     * Resolves an applicant's effective application limit by checking a per-user
+     * override first and then falling back to the global setting.
+     */
     public int resolveApplicantApplicationLimit(final String applicantUserId) {
         DataValidator.validateRequired(applicantUserId, "Applicant user ID");
         return applicantLimitPolicyDao.findByUserId(applicantUserId)

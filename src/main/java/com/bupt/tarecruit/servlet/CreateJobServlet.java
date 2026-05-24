@@ -21,6 +21,7 @@ public class CreateJobServlet extends BaseServlet {
         request.setAttribute("formAction", request.getContextPath() + "/organiser/jobs/create");
         request.setAttribute("formHeading", "Create job posting");
         request.setAttribute("submitLabel", "Publish job");
+        request.setAttribute("formAssistantQuota", 1);
         forward(request, response, "organiser/job_form.jsp");
     }
 
@@ -35,6 +36,7 @@ public class CreateJobServlet extends BaseServlet {
         request.setAttribute("submitLabel", "Publish job");
         try {
             String hoursValue = request.getParameter("hoursPerWeek");
+            String assistantQuotaValue = request.getParameter("assistantQuota");
             String deadlineValue = request.getParameter("deadline");
             jobService.createJob(
                     user.getId(),
@@ -43,11 +45,12 @@ public class CreateJobServlet extends BaseServlet {
                     request.getParameter("description"),
                     request.getParameter("requirements"),
                     Integer.parseInt(hoursValue),
+                    Integer.parseInt(assistantQuotaValue),
                     LocalDate.parse(deadlineValue));
             request.getSession().setAttribute("flash", "Job posted successfully.");
             redirect(request, response, "/organiser/jobs");
         } catch (NumberFormatException exception) {
-            setError(request, "Hours per week must be a valid number.");
+            setError(request, "Hours per week and assistant quota must be valid whole numbers.");
             forward(request, response, "organiser/job_form.jsp");
         } catch (java.time.format.DateTimeParseException exception) {
             setError(request, "Please choose a valid deadline.");
@@ -64,6 +67,7 @@ public class CreateJobServlet extends BaseServlet {
         request.setAttribute("formDescription", request.getParameter("description"));
         request.setAttribute("formRequirements", request.getParameter("requirements"));
         request.setAttribute("formHoursPerWeek", request.getParameter("hoursPerWeek"));
+        request.setAttribute("formAssistantQuota", request.getParameter("assistantQuota"));
         request.setAttribute("formDeadline", request.getParameter("deadline"));
     }
 }

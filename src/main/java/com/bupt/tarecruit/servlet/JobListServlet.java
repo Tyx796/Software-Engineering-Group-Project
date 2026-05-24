@@ -2,6 +2,7 @@ package com.bupt.tarecruit.servlet;
 
 import com.bupt.tarecruit.service.ApplicantService;
 import com.bupt.tarecruit.service.CvService;
+import com.bupt.tarecruit.service.JobRecommendationService;
 import com.bupt.tarecruit.service.JobService;
 import com.bupt.tarecruit.service.RecruitmentPolicyService;
 import com.bupt.tarecruit.model.Job;
@@ -20,6 +21,7 @@ public class JobListServlet extends BaseServlet {
     private final ApplicantService applicantService = new ApplicantService();
     private final CvService cvService = new CvService();
     private final RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService();
+    private final JobRecommendationService jobRecommendationService = new JobRecommendationService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -41,6 +43,11 @@ public class JobListServlet extends BaseServlet {
                         (left, right) -> left));
 
         request.setAttribute("jobs", jobs);
+        request.setAttribute(
+                "recommendedJobs",
+                jobRecommendationService.getRecommendedJobsForApplicant(
+                        currentUserId,
+                        JobRecommendationService.DEFAULT_LIMIT));
         request.setAttribute("searchKeyword", keyword == null ? "" : keyword.trim());
         request.setAttribute("profile", applicantService.findByUserId(currentUserId).orElse(null));
         request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(currentUserId));

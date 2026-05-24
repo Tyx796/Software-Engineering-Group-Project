@@ -13,6 +13,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * Handles CV upload, replacement, lookup, and file validation.
+ *
+ * <p>CV files are stored under the configured data directory in a per-user
+ * folder. The service accepts PDF, DOC, and DOCX files, rejects empty uploads,
+ * and keeps applicant profile metadata in sync with the current CV.</p>
+ */
 public class CvService {
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of("pdf", "doc", "docx");
     private final ApplicantService applicantService;
@@ -37,6 +44,11 @@ public class CvService {
         this.cvRootDirectory = cvRootDirectory;
     }
 
+    /**
+     * Replaces the applicant's current CV with a validated uploaded file.
+     *
+     * @return stored file name, such as {@code cv.pdf}
+     */
     public String uploadCV(final String userId, final String originalFileName, final InputStream inputStream) {
         return replaceCV(userId, originalFileName, inputStream);
     }

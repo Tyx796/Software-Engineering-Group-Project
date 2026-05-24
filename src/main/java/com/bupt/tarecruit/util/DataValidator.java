@@ -3,6 +3,12 @@ package com.bupt.tarecruit.util;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
+/**
+ * Shared server-side validation helpers used by services and servlets.
+ *
+ * <p>Validation errors are reported as {@link IllegalArgumentException} with
+ * user-facing messages so forms can show clear feedback.</p>
+ */
 public final class DataValidator {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[+0-9()\\-\\s]{6,20}$");

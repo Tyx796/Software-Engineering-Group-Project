@@ -8,6 +8,7 @@ import com.bupt.tarecruit.service.ApplicantService;
 import com.bupt.tarecruit.service.ApplicationService;
 import com.bupt.tarecruit.service.CvService;
 import com.bupt.tarecruit.service.JobService;
+import com.bupt.tarecruit.service.RecruitmentPolicyService;
 import com.bupt.tarecruit.util.SessionUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,6 +22,7 @@ public class OrganiserApplicationDetailServlet extends BaseServlet {
     private final ApplicantService applicantService = new ApplicantService();
     private final JobService jobService = new JobService();
     private final CvService cvService = new CvService(applicantService);
+    private final RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService();
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
@@ -42,6 +44,13 @@ public class OrganiserApplicationDetailServlet extends BaseServlet {
             request.setAttribute("job", job);
             request.setAttribute("hasUploadedCv", cvService.hasUploadedCv(application.getApplicantUserId()));
             request.setAttribute("currentCvFileName", cvService.currentCvFileName(application.getApplicantUserId()).orElse(""));
+            if (job != null) {
+                request.setAttribute("acceptedCount", recruitmentPolicyService.countAcceptedApplications(job.getId()));
+                request.setAttribute("remainingAssistantSlots",
+                        recruitmentPolicyService.remainingAssistantSlots(job.getId()));
+                request.setAttribute("jobFull", recruitmentPolicyService.isJobFull(job.getId()));
+            }
+            setApplicationStatusView(request);
             forward(request, response, "organiser/application_detail.jsp");
         } catch (IllegalArgumentException exception) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, exception.getMessage());

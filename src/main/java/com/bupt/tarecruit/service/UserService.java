@@ -10,6 +10,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Handles account registration, login, and user lookup.
+ *
+ * <p>Emails are normalised before storage, duplicate accounts are rejected, and
+ * login verifies password hashes through {@link PasswordUtil}. Legacy hashes are
+ * upgraded after successful login.</p>
+ */
 public class UserService {
     private final UserDao userDao;
 
@@ -25,6 +32,9 @@ public class UserService {
         this.userDao = userDao;
     }
 
+    /**
+     * Registers a new user account with a validated role and hashed password.
+     */
     public User register(final String username, final String email, final String password, final Role role) {
         validateRegistration(username, email, password, role);
         String normalizedEmail = email.trim().toLowerCase();
@@ -37,6 +47,9 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Authenticates an account by email and password.
+     */
     public User login(final String email, final String password) {
         validateLogin(email, password);
         String normalizedEmail = email.trim().toLowerCase();

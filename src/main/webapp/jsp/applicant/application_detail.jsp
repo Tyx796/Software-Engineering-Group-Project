@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Application Detail"/>
+<c:set var="pageSection" value="applicant-applications"/>
 <%@ include file="../common/header.jsp" %>
 <c:choose>
     <c:when test="${empty application}">

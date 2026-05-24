@@ -5,6 +5,13 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.HexFormat;
 
+/**
+ * Password hashing and verification helper.
+ *
+ * <p>New passwords are stored as salted SHA-256 hashes with a version prefix.
+ * Legacy unsalted SHA-256 hashes remain readable so bundled demo accounts and
+ * older data can be migrated after successful login.</p>
+ */
 public final class PasswordUtil {
     private static final String VERSION_PREFIX = "v2";
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();

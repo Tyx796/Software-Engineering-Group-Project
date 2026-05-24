@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Application Review"/>
+<c:set var="pageSection" value="organiser-jobs"/>
 <c:set var="pageAutoRefreshSeconds" value="30"/>
 <c:set var="pageAutoRefreshLabel" value="Organiser application review status"/>
 <%@ include file="../common/header.jsp" %>
@@ -69,7 +70,7 @@
                             <p class="mb-2">
                                 <strong>Recruitment state:</strong>
                                 <span class="badge ${jobFull ? 'text-bg-warning' : 'text-bg-success'}">
-                                        ${jobFull ? 'Full' : 'Open'}
+                                    ${jobFull ? 'Full' : 'Open'}
                                 </span>
                             </p>
                             <p class="mb-0"><strong>Requirements:</strong> ${job.requirements}</p>
