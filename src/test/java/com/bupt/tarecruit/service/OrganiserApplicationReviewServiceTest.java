@@ -113,6 +113,7 @@ class OrganiserApplicationReviewServiceTest {
         Path applicantsFile = Files.createTempFile("applicants", ".json");
         Path jobsFile = Files.createTempFile("jobs", ".json");
         Path cvsFile = Files.createTempFile("cvs", ".json");
+        Path cvRootDirectory = Files.createTempDirectory("cv-root");
         Path applicationsFile = Files.createTempFile("applications", ".json");
         Path settingsFile = Files.createTempFile("settings", ".json");
         Path policiesFile = Files.createTempFile("applicant-limit-policies", ".json");
@@ -122,7 +123,7 @@ class OrganiserApplicationReviewServiceTest {
         ApplicationDaoImpl applicationDao = new ApplicationDaoImpl(applicationsFile);
         JobDaoImpl jobDao = new JobDaoImpl(jobsFile);
         JobService jobService = new JobService(jobDao, applicationDao, new MessageService());
-        CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile));
+        CvService cvService = new CvService(applicantService, new CvDaoImpl(cvsFile), cvRootDirectory);
         SettingsService settingsService = new SettingsService(settingsFile);
         RecruitmentPolicyService recruitmentPolicyService = new RecruitmentPolicyService(
                 applicationDao,

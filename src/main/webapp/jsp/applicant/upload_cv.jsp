@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="Upload CV"/>
+<c:set var="pageSection" value="applicant-cv"/>
 <%@ include file="../common/header.jsp" %>
 <div class="row justify-content-center">
     <div class="col-lg-7">

@@ -13,7 +13,7 @@ class OrganiserMatchScoreContractTest {
         String content = Files.readString(Path.of("src/main/webapp/jsp/organiser/job_applications.jsp"));
 
         assertContains(content, "<th>Match Score</th>");
-        assertContains(content, "skillMatchesByApplicationId[application.id]");
+        assertContains(content, "view.skillMatch.matchScore");
         assertContains(content, "% match");
     }
 

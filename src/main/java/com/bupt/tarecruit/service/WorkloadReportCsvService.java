@@ -5,7 +5,16 @@ import com.bupt.tarecruit.model.ApplicantAcceptedAssignmentView;
 import com.bupt.tarecruit.model.ApplicantWorkloadView;
 import java.util.List;
 
+/**
+ * Converts admin workload views into a CSV report.
+ *
+ * <p>The exporter includes applicants with accepted assignments and escapes CSV
+ * fields so commas, quotes, and line breaks remain spreadsheet-compatible.</p>
+ */
 public class WorkloadReportCsvService {
+    /**
+     * Exports workload rows with a header line.
+     */
     public String export(final List<ApplicantWorkloadView> workloadViews) {
         StringBuilder builder = new StringBuilder();
         builder.append("Applicant Name,Email,Student ID,Programme,Total Hours Per Week,Threshold,Status,Assigned Jobs")

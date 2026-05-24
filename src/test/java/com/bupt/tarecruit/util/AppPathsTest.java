@@ -21,6 +21,7 @@ class AppPathsTest {
         Path resolved = AppPaths.resolveDataDirectory(
                 propertyPath.toString(),
                 envPath.toString(),
+                tempDir.resolve("tomcat").toString(),
                 tempDir);
 
         assertEquals(propertyPath.toAbsolutePath().normalize(), resolved);
@@ -33,6 +34,7 @@ class AppPathsTest {
         Path resolved = AppPaths.resolveDataDirectory(
                 null,
                 envPath.toString(),
+                tempDir.resolve("tomcat").toString(),
                 tempDir);
 
         assertEquals(envPath.toAbsolutePath().normalize(), resolved);
@@ -44,7 +46,7 @@ class AppPathsTest {
         Files.createDirectories(projectRoot);
         Files.createFile(projectRoot.resolve("pom.xml"));
 
-        Path resolved = AppPaths.resolveDataDirectory(null, null, projectRoot);
+        Path resolved = AppPaths.resolveDataDirectory(null, null, tempDir.resolve("tomcat").toString(), projectRoot);
 
         assertEquals(projectRoot.resolve("data").toAbsolutePath().normalize(), resolved);
     }
@@ -56,16 +58,25 @@ class AppPathsTest {
         Files.createDirectories(nestedDirectory);
         Files.createFile(projectRoot.resolve("pom.xml"));
 
-        Path resolved = AppPaths.resolveDataDirectory(null, null, nestedDirectory);
+        Path resolved = AppPaths.resolveDataDirectory(null, null, tempDir.resolve("tomcat").toString(), nestedDirectory);
 
         assertEquals(projectRoot.resolve("data").toAbsolutePath().normalize(), resolved);
+    }
+
+    @Test
+    void catalinaBaseDataDirectoryIsUsedWhenProjectRootMissing() {
+        Path catalinaBase = tempDir.resolve("tomcat");
+
+        Path resolved = AppPaths.resolveDataDirectory(null, null, catalinaBase.toString(), tempDir);
+
+        assertEquals(catalinaBase.resolve("data").toAbsolutePath().normalize(), resolved);
     }
 
     @Test
     void missingConfigurationAndProjectRootThrowsClearError() {
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
-                () -> AppPaths.resolveDataDirectory(null, null, tempDir));
+                () -> AppPaths.resolveDataDirectory(null, null, null, tempDir));
 
         assertTrue(exception.getMessage().contains("Unable to resolve the application data directory."));
     }
